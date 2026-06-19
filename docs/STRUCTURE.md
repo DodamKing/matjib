@@ -10,15 +10,15 @@
 | 경로 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
 | `app/layout.tsx` | ✅ | 루트 레이아웃, 폰트/전역 스타일 (CNA 기본) | `default` |
-| `app/page.tsx` | 🟡 | 메인: 위치게이트 → 카드덱 (현재 CNA 기본 랜딩, 교체 예정) | `default` |
+| `app/page.tsx` | ✅ | 메인: 위치게이트 → 도보필터 → 카드덱 → 셔플 (더미데이터) | `default` |
 | `app/api/recommend/route.ts` | 🟡 | 핵심 API. 매칭→조회→셔플→3카드 반환 | `POST` |
 
 ## 컴포넌트 (`components/`)
 | 파일 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
-| `LocationGate.tsx` | 🟡 | 위치 동의 UI + geolocation 획득 | `LocationGate` |
-| `Card.tsx` | 🟡 | 식당 카드 1개 (상호·업종·도보·길찾기) | `Card` |
-| `CardDeck.tsx` | 🟡 | 카드 3개 + 셔플 버튼 (Zero-Scroll) | `CardDeck` |
+| `LocationGate.tsx` | ✅ | 위치 동의 UI + geolocation 획득 (+강남역 둘러보기 fallback) | `LocationGate` |
+| `Card.tsx` | ✅ | 식당 카드 1개 (상호·업종·도보·길찾기) | `Card` |
+| `CardDeck.tsx` | ✅ | 카드 3개 + 셔플 버튼 (Zero-Scroll) | `CardDeck` |
 | `SituationInput.tsx` | 🟡 | 자연어 상황 입력 | `SituationInput` |
 
 ## 라이브러리 (`lib/`)
@@ -27,15 +27,15 @@
 | `sangwon.ts` | 🟡 | 소상공인 「반경내 조회」 클라이언트 (D2) | `searchInRadius()` |
 | `kakao.ts` | 🟡 | 카카오 로컬 길찾기 링크 보강, 선택적 (D4) | `enrichMapUrl()` |
 | `match.ts` | 🟡 | Claude 자연어→업종 번역 (D5) | `matchCategory()`, `MatchResult` |
-| `distance.ts` | 🟡 | 도보분↔미터 변환, 거리 계산 | `haversine()`, `walkMinutes()` |
-| `shuffle.ts` | 🟡 | 공정 셔플 + 후보 풀 관리 (D3) | `pickThree()` |
+| `distance.ts` | ✅ | 도보분↔미터 변환, 거리 계산 | `haversine()`, `walkMinutes()` |
+| `shuffle.ts` | ✅ | 후보 풀 구성 + 공정 셔플 (D3) | `buildPool()`, `pickThree()` |
 | `persona.ts` | 🟡 | "AI 처방" 카피 생성 | `prescribe()` |
-| `mock.ts` | 🟡 | 더미 식당 데이터 (Phase 1~2용, 비어있음) | `MOCK_RESTAURANTS` |
+| `mock.ts` | ✅ | 더미 식당 26개 (강남역 주변) | `MOCK_RESTAURANTS`, `MOCK_CENTER` |
 
 ## 타입 (`types/`)
 | 파일 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
-| `index.ts` | ✅ | 공유 타입 | `Restaurant`, `RecommendRequest`, `RecommendResponse`, `WalkRadius` |
+| `index.ts` | ✅ | 공유 타입 | `Restaurant`, `RestaurantSource`, `RecommendRequest`, `RecommendResponse`, `WalkRadius` |
 
 ## 설정 파일
 | 파일 | 용도 |

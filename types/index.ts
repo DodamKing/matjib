@@ -13,6 +13,9 @@ export type Restaurant = {
   mapUrl?: string; // 카카오 보강 시 길찾기 링크 (D4)
 };
 
+// 원천 데이터(공공데이터/더미)는 walkMin·mapUrl이 없다 — 사용자 위치 기준으로 런타임 계산.
+export type RestaurantSource = Omit<Restaurant, "walkMin" | "mapUrl">;
+
 export type RecommendRequest = {
   lat: number;
   lng: number;

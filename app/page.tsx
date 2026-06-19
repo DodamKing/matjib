@@ -1,65 +1,86 @@
-import Image from "next/image";
+"use client";
+
+// 메인: 위치게이트 → 도보 필터 → 카드 3개 → 셔플. (Phase 1, 더미데이터)
+import { useState } from "react";
+import type { Restaurant, WalkRadius } from "@/types";
+import { MOCK_RESTAURANTS } from "@/lib/mock";
+import { buildPool, pickThree } from "@/lib/shuffle";
+import { LocationGate } from "@/components/LocationGate";
+import { CardDeck } from "@/components/CardDeck";
+
+const RADII: { label: string; value: WalkRadius }[] = [
+  { label: "5분", value: 300 },
+  { label: "10분", value: 600 },
+  { label: "15분", value: 1000 },
+];
 
 export default function Home() {
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [radius, setRadius] = useState<WalkRadius>(600);
+  const [pool, setPool] = useState<Restaurant[]>([]);
+  const [cards, setCards] = useState<Restaurant[]>([]);
+
+  function prescribe(c: { lat: number; lng: number }, r: WalkRadius) {
+    const next = buildPool(MOCK_RESTAURANTS, c.lat, c.lng, r);
+    setPool(next);
+    setCards(pickThree(next));
+  }
+
+  function handleLocate(c: { lat: number; lng: number }) {
+    setCoords(c);
+    prescribe(c, radius);
+  }
+
+  function handleRadius(r: WalkRadius) {
+    setRadius(r);
+    if (coords) prescribe(coords, r);
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-amber-50 px-5 py-10 text-zinc-900">
+      <header className="mb-8 text-center">
+        <h1 className="text-2xl font-extrabold tracking-tight">
+          🩺 오늘 뭐 먹지 클리닉
+        </h1>
+        <p className="mt-1 text-sm text-zinc-500">
+          고민하지 마세요. 가까운 3곳만 처방해 드립니다.
+        </p>
+      </header>
+
+      {!coords ? (
+        <div className="flex flex-1 items-center justify-center">
+          <LocationGate onLocate={handleLocate} />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      ) : (
+        <div className="flex flex-col gap-5">
+          {/* 도보 시간 필터 */}
+          <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white p-1.5 shadow-sm">
+            {RADII.map(({ label, value }) => (
+              <button
+                key={value}
+                onClick={() => handleRadius(value)}
+                className={`rounded-xl py-2.5 text-sm font-bold transition ${
+                  radius === value
+                    ? "bg-orange-500 text-white shadow"
+                    : "text-zinc-500"
+                }`}
+              >
+                도보 {label}
+              </button>
+            ))}
+          </div>
+
+          {cards.length > 0 ? (
+            <CardDeck cards={cards} onShuffle={() => setCards(pickThree(pool))} />
+          ) : (
+            <div className="rounded-2xl bg-white p-8 text-center text-sm text-zinc-500 shadow-sm">
+              이 반경 안엔 식당이 없어요.
+              <br />
+              도보 시간을 늘려보세요. 🚶
+            </div>
+          )}
         </div>
-      </main>
-    </div>
+      )}
+    </main>
   );
 }
