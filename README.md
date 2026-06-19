@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍚 matjib — AI 결정장애 치료기 (식당 편)
 
-## Getting Started
+> **"더 이상 고르지 마세요. 걸어서 5분 거리 청정 맛집, AI가 딱 3개만 처방해 드립니다."**
 
-First, run the development server:
+점심마다 "오늘 뭐 먹지?"로 10분씩 고민하는 당신을 위한 서비스.
+정보를 *더* 보여주는 대신 **극단적으로 줄여서** 결정을 대신 내려줍니다.
+
+## ✨ 컨셉
+
+- **딱 3개만**: 리스트도, 무한 스크롤도 없습니다. 화면엔 카드 3장뿐. (Zero-Scroll)
+- **도보 5분**: 실시간 위치 기준 걸어갈 수 있는 곳만. (5/10/15분)
+- **셔플**: 마음에 안 들면? 새로운 3개를 다시 처방받으세요.
+- **상황으로 검색**: "비 오는데 뜨끈한 면 요리" 처럼 *지금 내 상태*를 말하면 AI가 맞춰줍니다.
+- **원클릭 진입**: 가입도 앱 설치도 없이, 링크 접속 후 위치 동의 한 번이면 끝.
+
+## 🛠 기술 스택
+
+- **Next.js (App Router) + TypeScript**
+- **Tailwind CSS** — 모바일 우선 미니멀 UI
+- **데이터**: 소상공인시장진흥공단 상가(상권)정보 공공데이터 API
+- **AI**: Anthropic Claude — 자연어 상황 → 업종 매칭
+
+## 🚧 진행 상황
+
+초기 개발 중. 프로젝트 뼈대 + 기획 문서 구성 완료, 기능 구현 단계로 진행 중.
+
+자세한 내용은 문서를 참고하세요:
+
+| 문서 | 내용 |
+|---|---|
+| [docs/ROADMAP.md](docs/ROADMAP.md) | 구현 로드맵 (Phase 0~4) |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 구조 · 데이터 흐름 |
+| [docs/DECISIONS.md](docs/DECISIONS.md) | 설계 결정 기록 |
+| [docs/STRUCTURE.md](docs/STRUCTURE.md) | 파일 색인 (코드맵) |
+
+## 🏃 실행
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) 접속.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> API 키는 `.env.local`에 설정합니다. 필요한 키 목록은 [.env.example](.env.example) 참고.

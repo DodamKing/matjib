@@ -15,8 +15,10 @@
 - `npx tsc --noEmit` 통과(에러 0). STRUCTURE.md 상태 갱신.
 
 **현재 상태**
-- 빌드 가능한 빈 뼈대 완성. 메인 화면(`app/page.tsx`)은 아직 CNA 기본 랜딩.
-- 미커밋: create-next-app의 초기 커밋 이후 추가 파일들은 아직 커밋 안 함.
+- 빌드 가능한 빈 뼈대 완성. dev 서버 정상 구동 확인됨. 메인 화면(`app/page.tsx`)은 아직 CNA 기본 랜딩.
+- 커밋 완료(뼈대+문서). 원격 연결: origin = https://github.com/DodamKing/matjib.git (**공개 레포**).
+  push는 사용자가 직접 (`git push -u origin main`).
+- `.gitignore`에 `!.env.example` 예외 추가(키 이름 파일은 커밋, 실제 키는 제외).
 - 공공데이터 API 키: 여전히 미발급.
 - 참고: create-next-app이 만든 기본 `AGENTS.md` 존재(정리 여부 추후 결정).
 
