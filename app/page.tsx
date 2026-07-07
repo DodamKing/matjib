@@ -1,12 +1,14 @@
 "use client";
 
-// 메인: 위치게이트 → 도보 필터 → 카드 3개 → 셔플. (Phase 1, 더미데이터)
+// 메인: 위치게이트 → 상황 태그 → 도보 필터 → 카드 3개 → 셔플. (Phase 2, 더미데이터)
 import { useState } from "react";
 import type { Restaurant, WalkRadius } from "@/types";
 import { MOCK_RESTAURANTS } from "@/lib/mock";
 import { buildPool, pickThree } from "@/lib/shuffle";
+import { filterByTags } from "@/lib/match";
 import { LocationGate } from "@/components/LocationGate";
 import { CardDeck } from "@/components/CardDeck";
+import { SituationInput } from "@/components/SituationInput";
 
 const RADII: { label: string; value: WalkRadius }[] = [
   { label: "5분", value: 300 },
@@ -17,23 +19,30 @@ const RADII: { label: string; value: WalkRadius }[] = [
 export default function Home() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [radius, setRadius] = useState<WalkRadius>(600);
+  const [tags, setTags] = useState<string[]>([]);
   const [pool, setPool] = useState<Restaurant[]>([]);
   const [cards, setCards] = useState<Restaurant[]>([]);
 
-  function prescribe(c: { lat: number; lng: number }, r: WalkRadius) {
-    const next = buildPool(MOCK_RESTAURANTS, c.lat, c.lng, r);
+  function prescribe(c: { lat: number; lng: number }, r: WalkRadius, t: string[]) {
+    const base = buildPool(MOCK_RESTAURANTS, c.lat, c.lng, r);
+    const next = filterByTags(base, t);
     setPool(next);
     setCards(pickThree(next));
   }
 
   function handleLocate(c: { lat: number; lng: number }) {
     setCoords(c);
-    prescribe(c, radius);
+    prescribe(c, radius, tags);
   }
 
   function handleRadius(r: WalkRadius) {
     setRadius(r);
-    if (coords) prescribe(coords, r);
+    if (coords) prescribe(coords, r, tags);
+  }
+
+  function handleTags(next: string[]) {
+    setTags(next);
+    if (coords) prescribe(coords, radius, next);
   }
 
   return (
@@ -53,6 +62,9 @@ export default function Home() {
         </div>
       ) : (
         <div className="flex flex-col gap-5">
+          {/* 상황 태그 (다중 선택, 미선택 = 아무거나) */}
+          <SituationInput selected={tags} onChange={handleTags} />
+
           {/* 도보 시간 필터 */}
           <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white p-1.5 shadow-sm">
             {RADII.map(({ label, value }) => (

@@ -7,6 +7,70 @@
 
 ---
 
+## 2026-07-07 (밤) — Phase 4 착수 (배포 전까지): 상태 처리 + 로깅 정책
+**한 일**
+- 실행 순서 결정(DECISIONS D8): Phase 4(배포 제외) → 공공데이터 키+Phase 3 → 카카오 고도화 순으로 진행하기로 함.
+- `components/LocationGate.tsx`: 에러 상태를 `denied`(권한 거부)/`error`(그 외: timeout·미지원 등)로 분리,
+  거부 시 전용 안내 문구 표시. `console.error`로 실패 원인 로깅.
+- `docs/DECISIONS.md`: D7(런타임 로깅 = console만, 외부 모니터링 미도입) 신규 추가.
+  D6에서 Anthropic 키 언급 제거(D5 개정으로 미사용).
+- "결과없음"(반경 내 후보 없음) 상태는 Phase 1에서 이미 구현돼 있어 추가 작업 없음(`app/page.tsx`).
+- 검증: `tsc --noEmit`/`eslint` 에러 0.
+- **Vercel 배포는 보류** — 사용자가 별도로 지시할 때 진행하기로 함(외부 배포는 확인 후 진행).
+
+**현재 상태**
+- Phase 4 중 배포를 제외한 항목(상태 처리·로깅 정책) 완료. ROADMAP 체크박스 갱신.
+- 미커밋 상태. 다음 커밋 시 이번 세션 변경(태그 매칭 + 파비콘/OG + 상태처리) 한 번에 묶을 예정.
+
+**다음 할 것**
+- 공공데이터(`data.go.kr`) API 키 발급 → `lib/sangwon.ts` 실연동 → `page.tsx`를 fetch 기반으로 전환(Phase 3).
+- 그다음 카카오 로컬 API로 `lib/kakao.ts` 고도화(선택, fallback 유지).
+- 사용자가 배포를 지시하면 `metadataBase` 채우고 Vercel 배포.
+
+## 2026-07-07 (저녁) — 파비콘 + 공유 미리보기 이미지
+**한 일**
+- `app/icon.svg` 신규: 브랜드 마크(오렌지 3카드 팬 모양) — "항상 카드 3개" 정체성을 아이콘화.
+  기본 Next.js `favicon.ico`(로고)는 제거하고 이 SVG로 대체.
+- `app/opengraph-image.tsx` 신규: `next/og`(`ImageResponse`)로 카톡/슬랙 등 링크 공유 시
+  미리보기 이미지를 정적 생성 (1200x630). 같은 3카드 마크 + 타이틀/태그라인.
+  Next.js 파일 컨벤션이 `og:image`/`twitter:image` 메타태그에 자동 연결.
+- `app/layout.tsx`: 기본 `metadata`("Create Next App")를 실제 타이틀/설명으로 교체.
+  `metadataBase`는 Vercel 배포 도메인 정해지면 채우기로 TODO 남김(현재는 로컬호스트로 폴백, 빌드 경고만 있고 에러 아님).
+- `public/*.svg`(create-next-app 스캐폴딩 잔재, 미사용 확인 후 삭제).
+- 검증: `npx next build` 성공, `/icon.svg`·`/opengraph-image` 둘 다 정적(○) 생성 확인.
+  `sharp`로 아이콘을 256px·32px 렌더링해 실제 파비콘 크기에서도 3카드 모양이 인식되는지 육안 확인.
+
+**현재 상태**
+- 파비콘·공유 미리보기 이미지 완성. 도메인 없어서 실제 배포 후 카톡 등에서 og:image 반영 여부는
+  Vercel 배포 시 `metadataBase` 채우고 재확인 필요.
+
+## 2026-07-07 — Phase 2: 상황 태그 매칭 (D5 개정, LLM 제거)
+**한 일**
+- 설계 변경: 자연어+Claude 매칭 → **고정 상황 태그(다중 선택) + 키워드 필터**로 전환.
+  이유: 원클릭·선택지 축소 철학에 태그 클릭이 더 맞고, LLM 키/지연/비용 없이 결정론적으로 동작.
+  태그로 전체 업종을 커버하려 하면 태그 수가 늘어나 정체성이 깨지므로, 커버리지는 포기하고
+  태그 미선택/미매칭은 "아무거나"+D3 공정 셔플이 흡수하도록 함. 상세 근거: `DECISIONS.md` D5.
+- `lib/tags.ts` 신설: 태그 8개(해장/든든하게/가볍게/매콤하게/뜨끈한 국물/이국음식/분위기 있게/빠르게 한끼).
+- `lib/match.ts`: Claude 스텁 제거 → `filterByTags()`(키워드 포함 매칭, 미매칭 시 원본 풀 반환).
+- `lib/persona.ts`: Claude 스텁 제거 → 템플릿 기반 `prescribe()`(선택 태그 있으면 반영, 없으면 랜덤 일반 문구).
+- `components/SituationInput.tsx`: 자연어 입력 스텁 → 태그 다중 선택 칩 UI로 구현.
+- `types/index.ts`: `SituationTag` 추가, `RecommendRequest.query` → `tags?: string[]`.
+- `app/page.tsx`: 태그 선택 상태 연결, `buildPool → filterByTags → pickThree` 흐름으로 변경.
+- `.env.example`에서 `ANTHROPIC_API_KEY` 제거(v1 스코프에서 불필요).
+- 문서 동기화: `DECISIONS.md`(D5 개정) · `MVP_SCOPE.md` · `ROADMAP.md`(Phase2 체크) · `ARCHITECTURE.md`
+  (데이터 흐름·폴더·타입·env) · `STRUCTURE.md`(상태 ✅ 갱신) · `CLAUDE.md`(기술스택/원칙/보안 문구) · `README.md`.
+- 검증: `tsc --noEmit` 에러 0, `eslint` 에러 0 (Phase3 스텁 미사용 파라미터 warning 2개만 남음).
+
+**현재 상태**
+- **ROADMAP Phase 2 완료**: 태그 선택 → 키워드 필터 → 3카드 → 셔플이 전부 클라이언트에서 동작(더미데이터).
+- `/api/recommend` API Route는 여전히 빈 스텁 — 매칭에 서버/키가 필요 없어져서 Phase 3(실데이터 조회 시
+  공공데이터 키 은닉 목적)까지 그대로 미룸.
+- 미커밋 상태(사용자 요청 시 묶어서 커밋 예정). dev 서버 확인은 사용자 몫.
+
+**다음 할 것**
+- 공공데이터 API 키 발급되면 Phase 3: `lib/sangwon.ts` 실연동, `/api/recommend`에 서버 오케스트레이션 이전.
+- (선택) 태그 라벨/키워드가 실제 소분류명과 안 맞으면 튜닝.
+
 ## 2026-06-19 (저녁) — Phase 0 마무리 + Phase 1
 **한 일**
 - `lib/mock.ts`: 강남역 주변 더미 식당 26개 (≈90m~1.4km 분산). `MOCK_CENTER` 추가.

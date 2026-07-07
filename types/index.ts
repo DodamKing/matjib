@@ -16,11 +16,17 @@ export type Restaurant = {
 // 원천 데이터(공공데이터/더미)는 walkMin·mapUrl이 없다 — 사용자 위치 기준으로 런타임 계산.
 export type RestaurantSource = Omit<Restaurant, "walkMin" | "mapUrl">;
 
+export type SituationTag = {
+  id: string;
+  label: string; // 칩 UI에 표시할 이름
+  keywords: string[]; // Restaurant.category 매칭용 키워드
+};
+
 export type RecommendRequest = {
   lat: number;
   lng: number;
   radius: WalkRadius;
-  query?: string; // 자연어 상황 입력
+  tags?: string[]; // 선택된 상황 태그 id들 (D5: 태그 매칭, LLM 미사용)
 };
 
 export type RecommendResponse = {

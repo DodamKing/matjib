@@ -7,17 +7,21 @@ import { MOCK_CENTER } from "@/lib/mock";
 type Props = { onLocate: (coords: { lat: number; lng: number }) => void };
 
 export function LocationGate({ onLocate }: Props) {
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "denied" | "error">("idle");
 
   function locate() {
     if (!navigator.geolocation) {
+      console.error("[LocationGate] 이 브라우저는 geolocation을 지원하지 않음");
       setStatus("error");
       return;
     }
     setStatus("loading");
     navigator.geolocation.getCurrentPosition(
       (pos) => onLocate({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => setStatus("error"),
+      (err) => {
+        console.error("[LocationGate] geolocation 실패:", err.code, err.message);
+        setStatus(err.code === err.PERMISSION_DENIED ? "denied" : "error");
+      },
       { enableHighAccuracy: true, timeout: 8000 },
     );
   }
@@ -35,6 +39,11 @@ export function LocationGate({ onLocate }: Props) {
         {status === "loading" ? "위치 확인 중…" : "📍 내 위치로 맛집 처방받기"}
       </button>
 
+      {status === "denied" && (
+        <p className="text-sm text-red-500">
+          위치 접근이 거부됐어요. 브라우저 설정에서 위치 권한을 허용하거나, 아래로 둘러봐 주세요.
+        </p>
+      )}
       {status === "error" && (
         <p className="text-sm text-red-500">
           위치를 가져오지 못했어요. 아래로 둘러보거나 다시 시도해 주세요.
