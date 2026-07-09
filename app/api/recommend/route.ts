@@ -5,6 +5,7 @@ import type { RecommendRequest, RecommendResponse, WalkRadius } from "@/types";
 import { searchInRadius } from "@/lib/sangwon";
 import { buildPool, pickThree } from "@/lib/shuffle";
 import { filterByTags } from "@/lib/match";
+import { resolveMode } from "@/lib/modes";
 
 // Edge 런타임: V8 아이솔레이트라 콜드스타트 ~ms (fetch+순수로직뿐, Node 전용 API 미사용).
 export const runtime = "edge";
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "잘못된 요청" }, { status: 400 });
   }
 
-  const { lat, lng, radius, tags = [] } = body;
+  const { lat, lng, radius, mode, tags = [] } = body;
   if (
     typeof lat !== "number" ||
     typeof lng !== "number" ||
@@ -35,13 +36,15 @@ export async function POST(req: Request) {
     );
   }
 
+  const selectedMode = resolveMode(mode);
+
   try {
     const sources = await searchInRadius({ lat, lng, radius: radius as WalkRadius });
-    // buildPool: 반경 재확인 + walkMin 부착 + 거리순 / filterByTags: 태그 키워드 필터.
-    const pool = filterByTags(
-      buildPool(sources, lat, lng, radius as WalkRadius),
-      tags,
-    ).slice(0, POOL_CAP);
+    // buildPool: 반경 재확인 + walkMin + 거리순 → 모드(밥집/카페/술집)로 업종 분리 → 태그 키워드 필터.
+    const byDistance = buildPool(sources, lat, lng, radius as WalkRadius).filter(
+      (r) => selectedMode.match(r.category),
+    );
+    const pool = filterByTags(byDistance, tags, selectedMode.tags).slice(0, POOL_CAP);
 
     const res: RecommendResponse = { cards: pickThree(pool), pool };
     return NextResponse.json(res);

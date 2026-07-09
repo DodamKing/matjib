@@ -30,6 +30,8 @@
 - [x] `/api/recommend` 서버 오케스트레이션: 조회→태그필터→거리순 상위20→3카드+풀 (D9)
 - [x] `app/page.tsx`: 클라 mock 처리 → `/api/recommend` fetch(로딩/에러 상태)로 전환
 - [x] `tags.ts` 키워드를 실제 sdsc2 소분류명에 맞게 튜닝
+- [x] **검색 모드 밥집/카페/술집** (D10): 음식 대분류 안의 카페·주점을 소분류로 분리, 모드별 태그
+- [x] 배포 준비: Edge 런타임 + 서울 리전 + metadataBase 자동
 - [ ] (선택) `kakao.ts`: 상호명+좌표 → 길찾기 링크 보강 (fallback)
 
 ## Phase 4 — 마감 (Vercel 배포 전까지 진행 중, D8: Phase 3보다 먼저 착수)

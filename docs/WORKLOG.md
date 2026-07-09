@@ -7,6 +7,24 @@
 
 ---
 
+## 2026-07-09 (추가) — 검색 모드 밥집/카페/술집 (D10)
+**한 일**
+- 문제 발견: 음식 대분류(I2)에 카페(비알코올)·주점(술집)이 섞여 밥집 검색에 커피숍이 뜸.
+- 상단 **모드 토글(🍚밥집/☕카페/🍺술집, 기본 밥집)** 추가. `lib/modes.ts` 신설 —
+  소분류명으로 3모드 분리(카페=카페·빵/도넛·아이스크림/빙수, 술집=주점 4종, 나머지=밥집) + 모드별 태그.
+- `lib/tags.ts`: `SITUATION_TAGS` → `MEAL_TAGS`/`CAFE_TAGS`/`BAR_TAGS`로 분리('가볍게'에서 카페 키워드 제거).
+- `lib/match.ts`: `filterByTags(pool, ids, tags)`로 일반화(모드 태그셋 인자).
+- `app/api/recommend`: 요청에 `mode` 추가 → `buildPool` 후 `mode.match`로 업종 분리 → 모드 태그 필터.
+- `app/page.tsx`: 모드 상태·토글 UI, 모드 전환 시 태그 초기화, `MODES[mode].tags`를 SituationInput에 주입.
+  `SituationInput`은 `tags` prop을 받도록 변경. 빈결과 문구도 모드명 반영.
+- **`lib/persona.ts` 삭제**: 헤더/태그칩과 중복이라 미사용 확정(D5 페르소나 항목 폐기, D10).
+- 검증: `tsc`/`eslint`/`next build` 통과. 라이브 캡처로 3모드 확인 — 밥집=분식·백반(카페 안섞임),
+  카페=빵/카페, 술집=주점. 폰으로 3장 전송.
+
+**현재 상태**
+- 커피숍 섞임 문제 해결 + 카페/술집 모드 신설. MVP 스코프를 "식당 편"→밥집/카페/술집으로 확장(D10).
+- 미커밋(사용자 확인 후 커밋 예정). 커밋 후 push→Vercel 자동 재배포.
+
 ## 2026-07-09 (추가) — 배포 준비 (Edge/리전/metadataBase/lang)
 **한 일**
 - `/api/recommend`에 `runtime="edge"` + `preferredRegion=["icn1"]`(서울) 지정 — 콜드스타트 ~ms,

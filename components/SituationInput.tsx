@@ -1,14 +1,16 @@
 // 상황 태그 선택 UI (다중 선택, 미선택 = "아무거나"). DECISIONS D5 개정.
+// 태그 세트는 현재 모드(밥집/카페/술집)에 따라 부모가 넘겨준다 (D10).
 "use client";
 
-import { SITUATION_TAGS } from "@/lib/tags";
+import type { SituationTag } from "@/types";
 
 type Props = {
+  tags: SituationTag[];
   selected: string[];
   onChange: (tagIds: string[]) => void;
 };
 
-export function SituationInput({ selected, onChange }: Props) {
+export function SituationInput({ tags, selected, onChange }: Props) {
   function toggle(id: string) {
     onChange(
       selected.includes(id) ? selected.filter((t) => t !== id) : [...selected, id],
@@ -17,7 +19,7 @@ export function SituationInput({ selected, onChange }: Props) {
 
   return (
     <div className="flex flex-wrap gap-2 rounded-2xl bg-white p-3 shadow-sm">
-      {SITUATION_TAGS.map((tag) => (
+      {tags.map((tag) => (
         <button
           key={tag.id}
           type="button"

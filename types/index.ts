@@ -26,6 +26,7 @@ export type RecommendRequest = {
   lat: number;
   lng: number;
   radius: WalkRadius;
+  mode?: "meal" | "cafe" | "bar"; // 검색 모드 (D10). 미지정 시 밥집
   tags?: string[]; // 선택된 상황 태그 id들 (D5: 태그 매칭, LLM 미사용)
 };
 

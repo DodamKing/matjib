@@ -5,24 +5,26 @@
 ```
 [브라우저 — app/page.tsx]
   1. navigator.geolocation → { lat, lng }   (거부 시 MOCK_CENTER=강남역 좌표로 폴백, 이후 동일)
-  2. (선택) 상황 태그 다중 선택: 해장/든든하게/가볍게/... (lib/tags.ts, D5)
-  3. 도보시간 선택: 5분(300m) / 10분(600m) / 15분(1km)
-  4. fetch POST /api/recommend { lat, lng, radius, tags }  → 로딩/에러 상태 처리
+  2. 모드 선택: 🍚 밥집 / ☕ 카페 / 🍺 술집 (기본 밥집, lib/modes.ts, D10)
+  3. (선택) 상황 태그 다중 선택: 현재 모드 세트 (lib/tags.ts, D5/D10)
+  4. 도보시간 선택: 5분(300m) / 10분(600m) / 15분(1km)
+  5. fetch POST /api/recommend { lat, lng, mode, radius, tags }  → 로딩/에러 상태 처리
         ▼
-  5. 응답 { cards:[≤3], pool:[≤20] } 수신 → 카드 3개 렌더 (Zero-Scroll)
-  6. [셔플] → 재요청 없이 반환된 pool에서 로컬 pickThree()로 새 3개
+  6. 응답 { cards:[≤3], pool:[≤20] } 수신 → 카드 3개 렌더 (Zero-Scroll)
+  7. [셔플] → 재요청 없이 반환된 pool에서 로컬 pickThree()로 새 3개
 
-[Next.js API Route — /api/recommend (실데이터 조회 + 키 은닉, DECISIONS D9)]
-  POST { lat, lng, radius, tags? }
+[Next.js API Route — /api/recommend (Edge/서울, 실데이터 조회 + 키 은닉, D9)]
+  POST { lat, lng, radius, mode?, tags? }
   → sangwon.searchInRadius: sdsc2 「반경내 상가업소 조회」 (radius, cx=lng, cy=lat, indsLclsCd=I2 음식)
   → buildPool(): 반경 재확인 + walkMin 계산, 거리순 정렬 (lib/shuffle.ts, D3)
-  → filterByTags(): 선택 태그 키워드로 category(소분류명) 필터, 미선택/미매칭 시 원본 풀 (lib/match.ts, D5)
+  → mode.match(): 소분류명으로 밥집/카페/술집 분리 (lib/modes.ts, D10)
+  → filterByTags(): 모드 태그 키워드로 category 필터, 미선택/미매칭 시 원본 풀 (lib/match.ts, D5)
   → 거리순 상위 20개로 캡 → pickThree(): 공정 셔플 3개 (품질 랭킹 X — D3)
   → (선택, 미구현) 카카오 로컬로 길찾기 링크 보강
   → 응답: { cards: [≤3], pool: [≤20] }
 ```
 > 키(SANGWON_API_KEY)는 이 API Route 서버에서만 사용 — 클라 번들 노출 금지 (D6).
-> "AI 처방" 카피(lib/persona.ts)는 아직 화면 미연결 — 카드 UI는 상호·업종·도보·길찾기만 표시.
+> 카드 UI는 상호·업종·도보·길찾기만 표시. (페르소나 카피는 D10에서 삭제)
 
 ## 폴더 구조 (예정)
 
@@ -42,11 +44,11 @@
 /lib
   sangwon.ts                # 소상공인 API 클라이언트 (D2)
   kakao.ts                  # 카카오 로컬 보강 (D4, 선택적)
-  tags.ts                   # 상황 태그 8개 + 키워드 매핑 (D5)
+  modes.ts                  # 검색 모드 밥집/카페/술집 + 모드별 태그 (D10)
+  tags.ts                   # 모드별 상황 태그 세트 + 키워드 매핑 (D5/D10)
   match.ts                  # 태그 키워드 → 업종 필터링 (D5, LLM 미사용)
   distance.ts               # 도보분 ↔ 미터 변환, 거리 계산
   shuffle.ts                # 공정 셔플 + 풀 관리 (D3)
-  persona.ts                # 템플릿 기반 "AI 처방" 카피 생성 (D5)
 /types
   index.ts                  # Restaurant, RecommendRequest/Response 등
 ```
@@ -74,6 +76,6 @@ type Restaurant = {
 };
 
 type SituationTag = { id: string; label: string; keywords: string[] };
-type RecommendRequest = { lat: number; lng: number; radius: 300|600|1000; tags?: string[] };
+type RecommendRequest = { lat: number; lng: number; radius: 300|600|1000; mode?: "meal"|"cafe"|"bar"; tags?: string[] };
 type RecommendResponse = { cards: Restaurant[]; /* ≤3 */ pool: Restaurant[]; /* ≤20, 셔플용 */ };
 ```

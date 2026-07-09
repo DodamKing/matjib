@@ -1,10 +1,11 @@
 "use client";
 
-// 메인: 위치게이트 → 상황 태그 → 도보 필터 → 카드 3개 → 셔플. (Phase 3, 실데이터)
+// 메인: 위치게이트 → 모드(밥집/카페/술집) → 상황 태그 → 도보 필터 → 카드 3개 → 셔플. (실데이터)
 // 조회/필터/셔플 선정은 서버(/api/recommend)에서. 클라는 반환된 풀로 로컬 셔플만.
 import { useState } from "react";
 import type { Restaurant, RecommendResponse, WalkRadius } from "@/types";
 import { pickThree } from "@/lib/shuffle";
+import { MODE_LIST, MODES, type ModeId } from "@/lib/modes";
 import { LocationGate } from "@/components/LocationGate";
 import { CardDeck } from "@/components/CardDeck";
 import { SituationInput } from "@/components/SituationInput";
@@ -17,6 +18,7 @@ const RADII: { label: string; value: WalkRadius }[] = [
 
 export default function Home() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [mode, setMode] = useState<ModeId>("meal");
   const [radius, setRadius] = useState<WalkRadius>(600);
   const [tags, setTags] = useState<string[]>([]);
   const [pool, setPool] = useState<Restaurant[]>([]);
@@ -24,14 +26,19 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  async function prescribe(c: { lat: number; lng: number }, r: WalkRadius, t: string[]) {
+  async function prescribe(
+    c: { lat: number; lng: number },
+    m: ModeId,
+    r: WalkRadius,
+    t: string[],
+  ) {
     setLoading(true);
     setError(false);
     try {
       const res = await fetch("/api/recommend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lat: c.lat, lng: c.lng, radius: r, tags: t }),
+        body: JSON.stringify({ lat: c.lat, lng: c.lng, mode: m, radius: r, tags: t }),
       });
       if (!res.ok) throw new Error(`recommend ${res.status}`);
       const data: RecommendResponse = await res.json();
@@ -49,17 +56,23 @@ export default function Home() {
 
   function handleLocate(c: { lat: number; lng: number }) {
     setCoords(c);
-    prescribe(c, radius, tags);
+    prescribe(c, mode, radius, tags);
+  }
+
+  function handleMode(m: ModeId) {
+    setMode(m);
+    setTags([]); // 태그 id는 모드별이라 전환 시 초기화
+    if (coords) prescribe(coords, m, radius, []);
   }
 
   function handleRadius(r: WalkRadius) {
     setRadius(r);
-    if (coords) prescribe(coords, r, tags);
+    if (coords) prescribe(coords, mode, r, tags);
   }
 
   function handleTags(next: string[]) {
     setTags(next);
-    if (coords) prescribe(coords, radius, next);
+    if (coords) prescribe(coords, mode, radius, next);
   }
 
   return (
@@ -79,8 +92,23 @@ export default function Home() {
         </div>
       ) : (
         <div className="flex flex-col gap-5">
-          {/* 상황 태그 (다중 선택, 미선택 = 아무거나) */}
-          <SituationInput selected={tags} onChange={handleTags} />
+          {/* 모드 전환: 밥집 / 카페 / 술집 (기본 밥집) */}
+          <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white p-1.5 shadow-sm">
+            {MODE_LIST.map((m) => (
+              <button
+                key={m.id}
+                onClick={() => handleMode(m.id)}
+                className={`rounded-xl py-2.5 text-sm font-bold transition ${
+                  mode === m.id ? "bg-orange-500 text-white shadow" : "text-zinc-500"
+                }`}
+              >
+                {m.emoji} {m.label}
+              </button>
+            ))}
+          </div>
+
+          {/* 상황 태그 (현재 모드 세트, 다중 선택, 미선택 = 아무거나) */}
+          <SituationInput tags={MODES[mode].tags} selected={tags} onChange={handleTags} />
 
           {/* 도보 시간 필터 */}
           <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white p-1.5 shadow-sm">
@@ -113,9 +141,9 @@ export default function Home() {
             <CardDeck cards={cards} onShuffle={() => setCards(pickThree(pool))} />
           ) : (
             <div className="rounded-2xl bg-white p-8 text-center text-sm text-zinc-500 shadow-sm">
-              이 반경 안엔 식당이 없어요.
+              이 반경 안엔 {MODES[mode].label}이 없어요.
               <br />
-              도보 시간을 늘려보세요. 🚶
+              도보 시간을 늘리거나 다른 모드를 눌러보세요. 🚶
             </div>
           )}
         </div>
