@@ -7,6 +7,19 @@
 
 ---
 
+## 2026-07-09 (추가) — 배포 준비 (Edge/리전/metadataBase/lang)
+**한 일**
+- `/api/recommend`에 `runtime="edge"` + `preferredRegion=["icn1"]`(서울) 지정 — 콜드스타트 ~ms,
+  한국 유저·공공데이터 API 양쪽에 가까워 왕복 지연 최소. Edge 호환 확인(전부 fetch+순수로직).
+- `app/layout.tsx`: `metadataBase`를 `VERCEL_PROJECT_PRODUCTION_URL`로 **자동 설정**(도메인 하드코딩 없이
+  배포하면 og:image 절대경로 자동 완성, 로컬은 localhost 폴백). `lang="en"`→`"ko"` 수정.
+- 검증: `tsc`·`eslint`·`next build` 전부 통과. `/api/recommend`=Dynamic(ƒ), `/`·`icon.svg`·`opengraph-image`=정적(○).
+
+**현재 상태**
+- 배포에 필요한 코드 준비 완료. **남은 건 사용자 액션**: (1) `git push`, (2) Vercel에서 레포 import,
+  (3) 환경변수 `SANGWON_API_KEY` 등록(⚠️ 없으면 502). metadataBase는 배포 시 자동 채워짐.
+- 이번 세션 변경(Phase3 이후분) 커밋 예정.
+
 ## 2026-07-09 (추가) — 개발 캡처 루프 도입 (Playwright)
 **한 일**
 - 개발 중 시각 확인용 스크린샷 워크플로 도입: Claude가 dev 서버를 백그라운드로 띄우고
@@ -39,9 +52,17 @@
 - 미커밋 상태(사용자 요청 시 묶어서 커밋 예정). dev 서버 확인·배포는 사용자 몫.
 - 알려진 한계(D9): 초밀집 반경은 API 1페이지(1,000개) 상한으로 최근접 일부 누락 이론상 가능 — 실측 영향 없어 MVP에선 미보완.
 
-**다음 할 것**
-- (선택) `lib/kakao.ts` 고도화: 상호명+좌표 → 카카오 로컬로 정확 길찾기 링크/주소 보강(fallback 유지).
-- 사용자가 배포를 지시하면 `metadataBase` 채우고 Vercel 배포.
+**다음 할 것 — Vercel 배포 (PC에서 진행 예정)**
+1. `git push` (로컬 main이 origin보다 앞섬).
+2. Vercel에서 GitHub 레포 `DodamKing/matjib` import.
+3. **환경변수 `SANGWON_API_KEY`를 Vercel 프로젝트 설정에 등록** (⚠️ `.env.local`은 커밋 안 되므로
+   Vercel에 직접 넣어야 함 — 안 넣으면 `/api/recommend`가 502). (KAKAO 키는 선택, 미발급이라 생략 가능)
+4. metadataBase는 코드에서 `VERCEL_PROJECT_PRODUCTION_URL`로 자동 채워짐 → 별도 작업 불필요.
+5. 배포 후 폰에서 **실제 GPS로 실사용 테스트** (https라 위치권한 정상 동작) + 카톡에 링크 붙여 OG 미리보기 확인.
+
+**그 외 남은 것**
+- 페르소나 카피(`lib/persona.ts`)는 헤더/태그칩과 중복이라 **미연결로 정리**(스킵 결정, 2026-07-09).
+- (선택) `lib/kakao.ts` 고도화: 상호명+좌표 → 카카오 로컬로 정확 길찾기 링크/주소 보강. `KAKAO_REST_API_KEY` 미발급.
 
 ## 2026-07-07 (밤) — Phase 4 착수 (배포 전까지): 상태 처리 + 로깅 정책
 **한 일**

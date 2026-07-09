@@ -6,6 +6,11 @@ import { searchInRadius } from "@/lib/sangwon";
 import { buildPool, pickThree } from "@/lib/shuffle";
 import { filterByTags } from "@/lib/match";
 
+// Edge 런타임: V8 아이솔레이트라 콜드스타트 ~ms (fetch+순수로직뿐, Node 전용 API 미사용).
+export const runtime = "edge";
+// 서울 리전: 한국 유저 + 공공데이터 API(apis.data.go.kr) 양쪽에 가까워 왕복 지연 최소.
+export const preferredRegion = ["icn1"];
+
 // 셔플 재추첨 풀 상한 — 거리순 상위 N개만 클라로 반환(전부 "가까운" 곳 보장 + 페이로드 경량).
 const POOL_CAP = 20;
 const VALID_RADII: WalkRadius[] = [300, 600, 1000];
