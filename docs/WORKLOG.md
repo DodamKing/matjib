@@ -7,6 +7,74 @@
 
 ---
 
+## 2026-07-09 (추가) — 지도 탭→전체화면 인터랙티브 지도 (NAVER Dynamic Map, D12)
+**한 일**
+- 사용자 선택: 시트 정적 썸네일 **탭 → 전체화면 인터랙티브 지도**(핀줌·이동). "지도 JS 키는 노출이 정상이냐"
+  질문 정리 → 지도 SDK 키는 **도메인 제한으로 보호되는 공개 키**라 D6/CLAUDE.md의 **명시적 예외**로 결정(D12 신규).
+- `components/MapModal.tsx` 신설: NAVER **Web Dynamic Map** 전체화면 오버레이. 스크립트 온디맨드 로드
+  (`oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=…`), 식당(주황)·내위치(파랑) 마커, `fitBounds`로 두 점 프레이밍,
+  `navermap_authFailure`/에러 시 안내 폴백, ESC·스크롤락.
+- `components/PlaceSheet.tsx`: 정적 썸네일을 **탭 가능**(🔍 탭하여 확대)하게 + **"🔵 내 위치 · 🟠 상호" 범례** 추가
+  (출발/도착 구분 명확화, Q 대응). `NEXT_PUBLIC_NCP_MAP_CLIENT_ID` 있을 때만 인터랙티브 활성.
+- env: `.env.local`/`.env.example`에 `NEXT_PUBLIC_NCP_MAP_CLIENT_ID`(= 같은 Application이면 Static과 동일 Client ID).
+- 문서: DECISIONS **D12** 신규, **CLAUDE.md 보안규칙에 지도 SDK JS 키 예외** 카브아웃 추가, STRUCTURE.
+- 검증: `tsc`/`eslint`/`next build` 통과. 별도 정적서버(8899)+Playwright로 SDK 실동작 확인 →
+  **AUTH_FAILURE**(Client ID 유효, URI `localhost:8899` **도메인 미등록**이 원인). 로더 param `ncpKeyId` 정확 확인.
+
+**현재 상태**
+- 코드 완성·빌드 통과. 사용자가 **커스텀 도메인을 붙이고 그 도메인을 NCP Web 서비스 URL에 등록** 완료.
+- **배포로 최종 검증 예정**: Vercel에 env 4개(`SANGWON_API_KEY`, `NCP_MAP_CLIENT_ID`, `NCP_MAP_CLIENT_SECRET`,
+  `NEXT_PUBLIC_NCP_MAP_CLIENT_ID`) 세팅 후 배포하면 정적 지도(즉시)·인터랙티브 지도(등록 도메인)까지 라이브 확인 가능.
+  (`NEXT_PUBLIC_*`는 빌드타임 주입이라 배포 전 세팅 필수. 도메인 등록은 재배포 없이 런타임 반영.)
+- 이 커밋에 D11(길찾기 감싸기)·D12(인터랙티브 지도)·문서 동기화까지 묶어 커밋. push는 사용자가.
+
+## 2026-07-09 (추가) — 시트 실지도 미리보기(NCP Static Map) + 모바일 dev 접속 (D11 확장)
+**한 일**
+- 사용자 결정: 길찾기 시트에 "B안"(실지도 썸네일)까지. 최신 문서 확인 후 **NCP Static Map** 채택
+  (Kakao 정적지도는 JS SDK=클라 키라 D6 위배 → 제외).
+- `app/api/staticmap/route.ts` 신설: NCP Static Map 서버 프록시. `GET ?plat,plng,ulat,ulng` →
+  마커 2점(식당 주황/사용자 파랑) 이미지 반환. **키는 서버에만**(`NCP_MAP_CLIENT_ID/SECRET`).
+  키 미설정 시 **501** 반환.
+- `components/PlaceSheet.tsx`: 로케이터 영역을 **실지도 `<img>` 우선 + onError 폴백**으로 개편.
+  키없음/실패(501·502)면 기존 방향·거리 나침반 로케이터로 자동 폴백 → 앱 안 깨짐.
+- `.env.example`에 NCP 키 2개 추가. `next.config.ts`에 `allowedDevOrigins`(핫스팟 192.168.137.1 /
+  이더넷 192.168.219.46) — 모바일에서 dev 접속 시 Next16 cross-origin 차단 해제(dev 전용).
+- 검증: `tsc`/`eslint`/`next build` 통과. 사용자 dev(3000) 라이브로 `/api/staticmap` **501** 확인
+  (=키 전엔 폴백). Next16이 같은 repo 2번째 dev 서버를 막아 별도 캡처 서버는 미기동.
+- 모바일 dev 메모: http+IP는 secure context가 아니라 **실 GPS 미동작이 정상** — "강남역 둘러보기"로 테스트,
+  실 GPS까지 보려면 `next dev --experimental-https`.
+
+**현재 상태**
+- 실지도 미리보기 **라이브 검증 완료**. 사용자가 NCP Static Map 키를 `.env.local`에 넣고 dev 재시작 →
+  라우트 200 `image/png`(1200×640), 강남역=파랑·식당=주황 마커 실지도 확인.
+- 미커밋.
+
+**NCP 디버깅 로그(실측)**: 처음 401 → 원인은 **구 엔드포인트**. 신 `maps.apigw.ntruss.com/map-static/v2/raster`로 교체해 해결.
+  이후 403 → 원인은 마커 **`type:e`**. 둘 다 `type:d`(색상 구분)로 교체해 해결. 라우트의 엔드포인트/마커 확정.
+
+**Dynamic Map 키**: 사용자가 만일 대비 발급해둠. 현재 미사용(용도=인터랙티브 임베드 지도, 클라 JS 키라 D6와 충돌).
+  당장 필요 없어 보류 — 향후 "지도 위 경로선/주변 탐색" 같은 기능 갈 때 D6 예외 두고 검토(WORKLOG만 기록, DECISIONS 미변경).
+
+## 2026-07-09 (추가) — 길찾기 in-app 감싸기: PlaceSheet 바텀시트 (D11)
+**한 일**
+- 문제: 카드 "길찾기"가 곧장 `map.kakao.com` 새 탭으로 튕겨 브랜드 밖 이탈. → **앱 안에서 올라오는
+  장소 상세 바텀시트**로 감싸고, 최종 외부 진입만 사용자가 고르게 함(의도된 핸드오프). D11 신규.
+- 목업 먼저: 폰 프레임 3단계 플로우 아티팩트로 방향 합의(정적지도 vs 인터랙티브 vs 무지도 3안 제시).
+  결정 = **키 없이 v1 먼저, 더 자연스러운 실지도 필요해지면 NCP Static Map 키 추가**.
+- `components/PlaceSheet.tsx` 신설(client): 미니 로케이터(방향 나침반+거리+도보) + 상호/업종 + 주소 복사(토스트)
+  + 내비앱 선택(카카오맵/네이버지도). 배경 딤·ESC·배경 스크롤 잠금·슬라이드업(reduced-motion 대응).
+- `lib/navlinks.ts` 신설: `NAV_APPS` 딥링크 빌더 — 카카오맵 `link/to`(웹·앱), 네이버 `nmap://route/walk`.
+  **전부 키 불필요**. 티맵은 차량 내비라 도보 서비스 컨셉과 안 맞아 제외.
+- `lib/distance.ts`: `bearingDeg`(방위각) + `compass8`(8방위 한글) 추가 — 실지도 타일 없이 방향 표시(키 0).
+- `Card.tsx`: 길찾기 `<a>` 외부링크 → `onOpen(restaurant)` 버튼으로. `CardDeck`·`page.tsx`가 `onOpen`/`openPlace`
+  상태로 시트 마운트. `globals.css`에 시트 진입 애니메이션 키프레임.
+- 검증: `tsc`/`eslint`/`next build` 통과. dev(3111) 백그라운드 + Playwright 캡처로 **실 공공데이터** 흐름 확인
+  (강남 둘러보기 → 카드 길찾기 → 시트: 방향/거리/주소/복사됨✓/내비앱). 폰으로 2장 전송, 서버 정리.
+
+**현재 상태**
+- 길찾기가 외부 즉시 이탈에서 **앱 내부 감싸기**로 전환 완료. 지도 미리보기는 방향·거리 로케이터(키 없음)까지.
+- 미커밋(사용자 확인 후 커밋 예정). 다음(선택): 더 자연스러운 실지도 → NCP Static Map 키 발급 후 `/api/staticmap` 프록시.
+
 ## 2026-07-09 (추가) — 검색 모드 밥집/카페/술집 (D10)
 **한 일**
 - 문제 발견: 음식 대분류(I2)에 카페(비알코올)·주점(술집)이 섞여 밥집 검색에 커피숍이 뜸.

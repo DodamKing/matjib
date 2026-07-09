@@ -32,13 +32,18 @@
 - [x] `tags.ts` 키워드를 실제 sdsc2 소분류명에 맞게 튜닝
 - [x] **검색 모드 밥집/카페/술집** (D10): 음식 대분류 안의 카페·주점을 소분류로 분리, 모드별 태그
 - [x] 배포 준비: Edge 런타임 + 서울 리전 + metadataBase 자동
+- [x] **길찾기 in-app 감싸기** (D11): 카드 길찾기 → 외부 즉시 이탈 대신 `PlaceSheet` 바텀시트
+  (방향·거리 미니 로케이터 + 주소복사 + 카카오/네이버 선택). 키 불필요, 실데이터 캡처 검증.
+- [x] **실지도 미리보기** (D11): NCP Static Map을 `/api/staticmap` 서버 프록시로 → 시트 지도 썸네일 (키 서버전용, 라이브 검증)
+- [x] **탭 → 인터랙티브 지도** (D12): NAVER Web Dynamic Map 전체화면(핀줌·이동), 클라 JS 키(도메인 제한 = D6 예외). 배포 도메인 등록 후 라이브
 - [ ] (선택) `kakao.ts`: 상호명+좌표 → 길찾기 링크 보강 (fallback)
 
 ## Phase 4 — 마감 (Vercel 배포 전까지 진행 중, D8: Phase 3보다 먼저 착수)
 - [x] 파비콘 + 공유(OG) 미리보기 이미지 (2026-07-07, 조기 완료)
 - [x] 상태 처리: 로딩 / 위치거부·에러 구분 / 결과없음(반경 확대 제안) — `LocationGate`·`app/page.tsx`
 - [x] 런타임 로깅 정책 결정: console만, 외부 모니터링 미도입 (DECISIONS D7)
-- [ ] Vercel 배포 — **보류 중, 사용자 지시 시 진행** (배포 시 `metadataBase`를 실제 도메인으로 채울 것)
+- [ ] Vercel 배포 — **진행 중**. env 4개 세팅 필수(`SANGWON_API_KEY`, `NCP_MAP_CLIENT_ID`, `NCP_MAP_CLIENT_SECRET`,
+  `NEXT_PUBLIC_NCP_MAP_CLIENT_ID`=빌드타임). metadataBase는 코드에서 자동. 커스텀 도메인은 NCP Web 서비스 URL에 등록 완료.
 
 ## 화면/상태 (UX 명세 초안)
 - **위치 게이트**: "위치 동의" 한 버튼. 거부 시 안내 + 재시도.

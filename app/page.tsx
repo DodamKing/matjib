@@ -9,6 +9,7 @@ import { MODE_LIST, MODES, type ModeId } from "@/lib/modes";
 import { LocationGate } from "@/components/LocationGate";
 import { CardDeck } from "@/components/CardDeck";
 import { SituationInput } from "@/components/SituationInput";
+import { PlaceSheet } from "@/components/PlaceSheet";
 
 const RADII: { label: string; value: WalkRadius }[] = [
   { label: "5분", value: 300 },
@@ -25,6 +26,7 @@ export default function Home() {
   const [cards, setCards] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [openPlace, setOpenPlace] = useState<Restaurant | null>(null);
 
   async function prescribe(
     c: { lat: number; lng: number },
@@ -138,7 +140,11 @@ export default function Home() {
               잠시 후 다시 시도해 주세요. 🙏
             </div>
           ) : cards.length > 0 ? (
-            <CardDeck cards={cards} onShuffle={() => setCards(pickThree(pool))} />
+            <CardDeck
+              cards={cards}
+              onShuffle={() => setCards(pickThree(pool))}
+              onOpen={setOpenPlace}
+            />
           ) : (
             <div className="rounded-2xl bg-white p-8 text-center text-sm text-zinc-500 shadow-sm">
               이 반경 안엔 {MODES[mode].label}이 없어요.
@@ -147,6 +153,14 @@ export default function Home() {
             </div>
           )}
         </div>
+      )}
+
+      {openPlace && coords && (
+        <PlaceSheet
+          place={openPlace}
+          userCoords={coords}
+          onClose={() => setOpenPlace(null)}
+        />
       )}
     </main>
   );

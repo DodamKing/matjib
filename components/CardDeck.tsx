@@ -2,14 +2,18 @@
 import type { Restaurant } from "@/types";
 import { Card } from "@/components/Card";
 
-type Props = { cards: Restaurant[]; onShuffle: () => void };
+type Props = {
+  cards: Restaurant[];
+  onShuffle: () => void;
+  onOpen: (r: Restaurant) => void;
+};
 
-export function CardDeck({ cards, onShuffle }: Props) {
+export function CardDeck({ cards, onShuffle, onOpen }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3">
         {cards.map((r) => (
-          <Card key={r.id} restaurant={r} />
+          <Card key={r.id} restaurant={r} onOpen={onOpen} />
         ))}
       </div>
       <button

@@ -1,12 +1,12 @@
 // 식당 카드 1개 (상호·업종·도보시간·길찾기).
+// 길찾기는 외부로 튕기지 않고 부모의 onOpen으로 앱 내부 상세 시트를 연다 (D11).
+"use client";
+
 import type { Restaurant } from "@/types";
 
-export function Card({ restaurant }: { restaurant: Restaurant }) {
-  // 길찾기: 카카오 보강(mapUrl) 있으면 사용, 없으면 상호명+좌표로 카카오맵 링크 (D4)
-  const mapUrl =
-    restaurant.mapUrl ??
-    `https://map.kakao.com/link/map/${encodeURIComponent(restaurant.name)},${restaurant.lat},${restaurant.lng}`;
+type Props = { restaurant: Restaurant; onOpen: (r: Restaurant) => void };
 
+export function Card({ restaurant, onOpen }: Props) {
   return (
     <div className="flex items-center justify-between rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm">
       <div className="min-w-0">
@@ -20,14 +20,12 @@ export function Card({ restaurant }: { restaurant: Restaurant }) {
           🚶 걸어서 약 {restaurant.walkMin}분
         </p>
       </div>
-      <a
-        href={mapUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="ml-3 shrink-0 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white"
+      <button
+        onClick={() => onOpen(restaurant)}
+        className="ml-3 shrink-0 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition active:scale-95"
       >
         길찾기
-      </a>
+      </button>
     </div>
   );
 }

@@ -36,8 +36,10 @@
 
 ## 보안 규칙 (필수)
 
-- 모든 외부 API 키(공공데이터, 카카오)는 **서버(API Route)에서만** 사용.
+- 모든 외부 API 키(공공데이터, 카카오, NCP Static Map 시크릿)는 **서버(API Route)에서만** 사용.
   클라이언트 번들에 키를 절대 노출하지 말 것. `NEXT_PUBLIC_` 접두사 금지(키에 한해).
+- **유일한 예외(D12)**: 지도 SDK JS 키(NAVER Dynamic Map, `NEXT_PUBLIC_NCP_MAP_CLIENT_ID`)는 브라우저 노출이
+  구조상 불가피한 **공개 키**라 허용 — 도메인(Web 서비스 URL) 제한으로 보호. 이 예외는 지도 SDK JS 키 한정.
 - 키는 `.env.local`에 두고 `.gitignore`로 제외. `.env.example`만 커밋.
 
 ## 작업 규칙
