@@ -30,6 +30,6 @@ export type RecommendRequest = {
 };
 
 export type RecommendResponse = {
-  cards: Restaurant[]; // 항상 길이 3 (Zero-Scroll)
-  poolToken: string; // 셔플용 후보 풀 식별자
+  cards: Restaurant[]; // 항상 최대 3개 (Zero-Scroll)
+  pool: Restaurant[]; // 셔플 재추첨용 후보 풀 (거리순, 상위 N개). 클라가 로컬 pickThree로 셔플.
 };

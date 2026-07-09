@@ -1,11 +1,10 @@
 "use client";
 
-// 메인: 위치게이트 → 상황 태그 → 도보 필터 → 카드 3개 → 셔플. (Phase 2, 더미데이터)
+// 메인: 위치게이트 → 상황 태그 → 도보 필터 → 카드 3개 → 셔플. (Phase 3, 실데이터)
+// 조회/필터/셔플 선정은 서버(/api/recommend)에서. 클라는 반환된 풀로 로컬 셔플만.
 import { useState } from "react";
-import type { Restaurant, WalkRadius } from "@/types";
-import { MOCK_RESTAURANTS } from "@/lib/mock";
-import { buildPool, pickThree } from "@/lib/shuffle";
-import { filterByTags } from "@/lib/match";
+import type { Restaurant, RecommendResponse, WalkRadius } from "@/types";
+import { pickThree } from "@/lib/shuffle";
 import { LocationGate } from "@/components/LocationGate";
 import { CardDeck } from "@/components/CardDeck";
 import { SituationInput } from "@/components/SituationInput";
@@ -22,12 +21,30 @@ export default function Home() {
   const [tags, setTags] = useState<string[]>([]);
   const [pool, setPool] = useState<Restaurant[]>([]);
   const [cards, setCards] = useState<Restaurant[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  function prescribe(c: { lat: number; lng: number }, r: WalkRadius, t: string[]) {
-    const base = buildPool(MOCK_RESTAURANTS, c.lat, c.lng, r);
-    const next = filterByTags(base, t);
-    setPool(next);
-    setCards(pickThree(next));
+  async function prescribe(c: { lat: number; lng: number }, r: WalkRadius, t: string[]) {
+    setLoading(true);
+    setError(false);
+    try {
+      const res = await fetch("/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lat: c.lat, lng: c.lng, radius: r, tags: t }),
+      });
+      if (!res.ok) throw new Error(`recommend ${res.status}`);
+      const data: RecommendResponse = await res.json();
+      setPool(data.pool);
+      setCards(data.cards);
+    } catch (e) {
+      console.error("[Home] prescribe 실패:", e);
+      setError(true);
+      setPool([]);
+      setCards([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleLocate(c: { lat: number; lng: number }) {
@@ -82,7 +99,17 @@ export default function Home() {
             ))}
           </div>
 
-          {cards.length > 0 ? (
+          {loading ? (
+            <div className="rounded-2xl bg-white p-8 text-center text-sm text-zinc-500 shadow-sm">
+              가까운 맛집을 처방 중이에요… 🩺
+            </div>
+          ) : error ? (
+            <div className="rounded-2xl bg-white p-8 text-center text-sm text-red-500 shadow-sm">
+              추천을 불러오지 못했어요.
+              <br />
+              잠시 후 다시 시도해 주세요. 🙏
+            </div>
+          ) : cards.length > 0 ? (
             <CardDeck cards={cards} onShuffle={() => setCards(pickThree(pool))} />
           ) : (
             <div className="rounded-2xl bg-white p-8 text-center text-sm text-zinc-500 shadow-sm">

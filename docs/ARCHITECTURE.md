@@ -3,24 +3,26 @@
 ## 데이터 흐름 (한 장 요약)
 
 ```
-[브라우저 — Phase 1~2는 전부 클라이언트에서 처리, 서버 호출 없음]
-  1. navigator.geolocation → { lat, lng }
+[브라우저 — app/page.tsx]
+  1. navigator.geolocation → { lat, lng }   (거부 시 MOCK_CENTER=강남역 좌표로 폴백, 이후 동일)
   2. (선택) 상황 태그 다중 선택: 해장/든든하게/가볍게/... (lib/tags.ts, D5)
   3. 도보시간 선택: 5분(300m) / 10분(600m) / 15분(1km)
-  4. buildPool(): 반경 내 후보 + walkMin 계산 (lib/shuffle.ts, D3)
-  5. filterByTags(): 선택 태그 키워드로 category 필터, 미선택/미매칭 시 원본 풀 (lib/match.ts, D5)
-  6. pickThree(): 공정 셔플로 3개 선정 (품질 랭킹 X — DECISIONS D3)
-  7. prescribe(): 템플릿 기반 "AI 처방" 카피 (lib/persona.ts, D5)
+  4. fetch POST /api/recommend { lat, lng, radius, tags }  → 로딩/에러 상태 처리
         ▼
-  8. 3개 카드 렌더 (Zero-Scroll)
-  9. [셔플] → 같은 풀에서 새 3개 재추첨
+  5. 응답 { cards:[≤3], pool:[≤20] } 수신 → 카드 3개 렌더 (Zero-Scroll)
+  6. [셔플] → 재요청 없이 반환된 pool에서 로컬 pickThree()로 새 3개
 
-[Next.js API Route — Phase 3부터 사용 (실데이터 조회, 키 은닉 필요할 때)]
-  POST /api/recommend { lat, lng, radius, tags? }
-  → 소상공인 「반경내 상가업소 조회」 호출 (radius, cx=lng, cy=lat, indsLclsCd=음식)
-  → (선택) 상호명+좌표 → 카카오 로컬로 길찾기 링크 보강 (실패 시 생략)
-  → 응답: { cards: [3], poolToken }
+[Next.js API Route — /api/recommend (실데이터 조회 + 키 은닉, DECISIONS D9)]
+  POST { lat, lng, radius, tags? }
+  → sangwon.searchInRadius: sdsc2 「반경내 상가업소 조회」 (radius, cx=lng, cy=lat, indsLclsCd=I2 음식)
+  → buildPool(): 반경 재확인 + walkMin 계산, 거리순 정렬 (lib/shuffle.ts, D3)
+  → filterByTags(): 선택 태그 키워드로 category(소분류명) 필터, 미선택/미매칭 시 원본 풀 (lib/match.ts, D5)
+  → 거리순 상위 20개로 캡 → pickThree(): 공정 셔플 3개 (품질 랭킹 X — D3)
+  → (선택, 미구현) 카카오 로컬로 길찾기 링크 보강
+  → 응답: { cards: [≤3], pool: [≤20] }
 ```
+> 키(SANGWON_API_KEY)는 이 API Route 서버에서만 사용 — 클라 번들 노출 금지 (D6).
+> "AI 처방" 카피(lib/persona.ts)는 아직 화면 미연결 — 카드 UI는 상호·업종·도보·길찾기만 표시.
 
 ## 폴더 구조 (예정)
 
@@ -73,5 +75,5 @@ type Restaurant = {
 
 type SituationTag = { id: string; label: string; keywords: string[] };
 type RecommendRequest = { lat: number; lng: number; radius: 300|600|1000; tags?: string[] };
-type RecommendResponse = { cards: Restaurant[]; /* len 3 */ poolToken: string };
+type RecommendResponse = { cards: Restaurant[]; /* ≤3 */ pool: Restaurant[]; /* ≤20, 셔플용 */ };
 ```

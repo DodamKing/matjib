@@ -25,8 +25,11 @@
 - [x] `app/page.tsx`: 태그 선택 → 필터 → 3개 카드 흐름 연결 (클라이언트 전용, API route 불필요)
 
 ## Phase 3 — 실데이터 연동 (키 발급 후)
-- [ ] data.go.kr API 키 발급 + `.env.local` 설정
-- [ ] `sangwon.ts`: 「반경내 상가업소 조회」 실연동 → 더미 교체
+- [x] data.go.kr API 키 발급 + `.env.local` 설정 (2026-07-09, 실 API 검증)
+- [x] `sangwon.ts`: sdsc2 「반경내 상가업소 조회」 실연동 (음식=I2 필터) → 더미 교체
+- [x] `/api/recommend` 서버 오케스트레이션: 조회→태그필터→거리순 상위20→3카드+풀 (D9)
+- [x] `app/page.tsx`: 클라 mock 처리 → `/api/recommend` fetch(로딩/에러 상태)로 전환
+- [x] `tags.ts` 키워드를 실제 sdsc2 소분류명에 맞게 튜닝
 - [ ] (선택) `kakao.ts`: 상호명+좌표 → 길찾기 링크 보강 (fallback)
 
 ## Phase 4 — 마감 (Vercel 배포 전까지 진행 중, D8: Phase 3보다 먼저 착수)

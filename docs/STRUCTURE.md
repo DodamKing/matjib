@@ -10,8 +10,8 @@
 | 경로 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
 | `app/layout.tsx` | ✅ | 루트 레이아웃, 메타데이터(타이틀/설명), 폰트/전역 스타일 | `default`, `metadata` |
-| `app/page.tsx` | ✅ | 메인: 위치게이트 → 태그선택 → 도보필터 → 카드덱 → 셔플 (더미데이터) | `default` |
-| `app/api/recommend/route.ts` | 🟡 | 핵심 API. 매칭→조회→셔플→3카드 반환 | `POST` |
+| `app/page.tsx` | ✅ | 메인: 위치게이트 → 태그선택 → 도보필터 → 카드덱 → 셔플. `/api/recommend` fetch + 로딩/에러 상태 (실데이터) | `default` |
+| `app/api/recommend/route.ts` | ✅ | 핵심 API. 반경조회→태그필터→거리순 상위20→3카드+풀 반환. 키는 여기서만 | `POST` |
 | `app/icon.svg` | ✅ | 파비콘 — 3카드 팬 모양 마크 (오렌지 톤) | — |
 | `app/opengraph-image.tsx` | ✅ | 공유 링크 미리보기 이미지 생성 (og:image/twitter:image 자동 연결) | `default` |
 
@@ -26,14 +26,14 @@
 ## 라이브러리 (`lib/`)
 | 파일 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
-| `sangwon.ts` | 🟡 | 소상공인 「반경내 조회」 클라이언트 (D2) | `searchInRadius()` |
+| `sangwon.ts` | ✅ | 소상공인 sdsc2 「반경내 조회」 실연동, 음식(I2) 필터·필드매핑 (D2) | `searchInRadius()` |
 | `kakao.ts` | 🟡 | 카카오 로컬 길찾기 링크 보강, 선택적 (D4) | `enrichMapUrl()` |
 | `tags.ts` | ✅ | 상황 태그 8개 + 키워드 매핑 (D5) | `SITUATION_TAGS` |
 | `match.ts` | ✅ | 태그 키워드 → 업종 필터링, LLM 미사용 (D5) | `filterByTags()` |
 | `distance.ts` | ✅ | 도보분↔미터 변환, 거리 계산 | `haversine()`, `walkMinutes()` |
 | `shuffle.ts` | ✅ | 후보 풀 구성 + 공정 셔플 (D3) | `buildPool()`, `pickThree()` |
 | `persona.ts` | ✅ | 템플릿 기반 "AI 처방" 카피 생성 (D5) | `prescribe()` |
-| `mock.ts` | ✅ | 더미 식당 26개 (강남역 주변) | `MOCK_RESTAURANTS`, `MOCK_CENTER` |
+| `mock.ts` | ✅ | 더미 식당 26개 — **제품 런타임 미사용(개발/오프라인용)**. `MOCK_CENTER`(강남역)만 위치거부 폴백 좌표로 실사용 | `MOCK_RESTAURANTS`, `MOCK_CENTER` |
 
 ## 타입 (`types/`)
 | 파일 | 상태 | 책임 | 주요 export |

@@ -7,6 +7,42 @@
 
 ---
 
+## 2026-07-09 (추가) — 개발 캡처 루프 도입 (Playwright)
+**한 일**
+- 개발 중 시각 확인용 스크린샷 워크플로 도입: Claude가 dev 서버를 백그라운드로 띄우고
+  **글로벌 설치한 Playwright**로 헤드리스 크롬 캡처 → 모바일 전송. `CLAUDE.md` 규칙 갱신
+  (dev 서버 캡처 목적 한정 허용 + 알림 `[맛집]` 접두어).
+- Playwright는 **글로벌 설치**(`npm i -g playwright`, 브라우저는 머신 공유 캐시). 맛집 레포
+  `package.json`은 안 건드림. 캡처 스크립트는 세션 스크래치 폴더(`capture.js`)에 격리.
+- 첫 실전: 강남역 좌표 주입 → 위치버튼 → 실 `/api/recommend`(200) → 3카드 캡처.
+  '해장' 태그 선택 시 국수/국밥집으로 필터되는 것 화면으로 확인, 2장 모바일 전송. 캡처 후 dev 서버 정리.
+
+## 2026-07-09 — Phase 3: 공공데이터 실연동 (sdsc2) + 서버 오케스트레이션
+**한 일**
+- 공공데이터 키 발급·검증: 실 API로 엔드포인트/파라미터/음식코드 확정 (DECISIONS D2 갱신).
+  - 엔드포인트 `…/api/open/sdsc2/storeListInRadius` (구버전 sdsc는 폐기), **음식 대분류=`I2`**,
+    cx=경도/cy=위도(축 뒤집힘), 필드매핑 bizesId/bizesNm/indsSclsNm/lon/lat/rdnmAdr 확인.
+  - 초기 "Forbidden"은 키 활성화 지연(최대 1h)이었고, 재입력 후 `resultCode:00` 정상.
+- `lib/sangwon.ts`: `searchInRadius()` 실구현 — I2 필터, JSON 파싱/게이트웨이오류 방어, `RestaurantSource[]` 매핑.
+- `app/api/recommend/route.ts`: 스텁 → 오케스트레이션. `POST{lat,lng,radius,tags}` →
+  sangwon → buildPool(거리순) → filterByTags → **거리순 상위 20 캡** → pickThree. `{cards, pool}` 반환. 키는 서버에서만.
+- `app/page.tsx`: 클라 mock 직접호출 제거 → `/api/recommend` fetch, **로딩/에러 상태** 추가. 셔플은 반환된 pool로 로컬 pickThree.
+- `types`: `RecommendResponse.poolToken` → `pool: Restaurant[]` (셔플용 실체화).
+- `lib/tags.ts`: 8개 태그 키워드를 **실제 sdsc2 소분류명**(백반/한정식·국/탕/찌개류·중국집 등)에 맞게 튜닝.
+- `lib/mock.ts`: 제품 런타임에서 제거(파일은 개발용 보존). 위치 거부 시 `MOCK_CENTER`(강남역) 좌표로 동일 실 API 호출.
+- 결정 기록: DECISIONS **D9 신규**(서버 조회 + 셔플 풀 상한 20 + 1000페이지 한계 + 폴백).
+- 검증: `tsc --noEmit`·`eslint` 에러 0. 실 API 데이터로 파이프라인 스모크 테스트 — 8개 태그 전부 실업종 매칭,
+  상위20 풀·3장 선정 정상, 결과 전부 도보 1~2분권 확인.
+
+**현재 상태**
+- **ROADMAP Phase 3 완료**(카카오 보강 제외): 실데이터로 위치→태그필터→3카드→셔플이 서버 오케스트레이션으로 동작.
+- 미커밋 상태(사용자 요청 시 묶어서 커밋 예정). dev 서버 확인·배포는 사용자 몫.
+- 알려진 한계(D9): 초밀집 반경은 API 1페이지(1,000개) 상한으로 최근접 일부 누락 이론상 가능 — 실측 영향 없어 MVP에선 미보완.
+
+**다음 할 것**
+- (선택) `lib/kakao.ts` 고도화: 상호명+좌표 → 카카오 로컬로 정확 길찾기 링크/주소 보강(fallback 유지).
+- 사용자가 배포를 지시하면 `metadataBase` 채우고 Vercel 배포.
+
 ## 2026-07-07 (밤) — Phase 4 착수 (배포 전까지): 상태 처리 + 로깅 정책
 **한 일**
 - 실행 순서 결정(DECISIONS D8): Phase 4(배포 제외) → 공공데이터 키+Phase 3 → 카카오 고도화 순으로 진행하기로 함.
