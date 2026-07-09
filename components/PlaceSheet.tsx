@@ -110,7 +110,7 @@ export function PlaceSheet({ place, userCoords, onClose }: Props) {
               )}
             </button>
             <p className="px-1 text-[11px] text-zinc-400">
-              🔵 내 위치 · 🟠 {place.name}
+              🔵 출발(내 위치) · 🟠 도착 {place.name}
             </p>
           </div>
         ) : (

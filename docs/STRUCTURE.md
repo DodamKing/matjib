@@ -9,7 +9,7 @@
 ## 앱 / 라우트
 | 경로 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
-| `app/layout.tsx` | ✅ | 루트 레이아웃, 메타데이터(타이틀/설명), 폰트/전역 스타일 | `default`, `metadata` |
+| `app/layout.tsx` | ✅ | 루트 레이아웃 + 메타데이터. `metadataBase`/canonical/OG/twitter를 `SITE_URL`→`VERCEL_PROJECT_PRODUCTION_URL`→localhost 순으로 해석(프로토콜 자동 보강). 폰트/전역 스타일 | `default`, `metadata` |
 | `app/page.tsx` | ✅ | 메인: 위치게이트 → 모드(밥집/카페/술집) → 태그선택 → 도보필터 → 카드덱 → 셔플. `/api/recommend` fetch + 로딩/에러 상태. `openPlace` 상태로 `PlaceSheet` 마운트 (D11) | `default` |
 | `app/api/recommend/route.ts` | ✅ | 핵심 API(Edge/서울). 반경조회→모드필터→태그필터→거리순 상위20→3카드+풀. 키는 여기서만 | `POST` |
 | `app/api/staticmap/route.ts` | ✅ | 시트 지도 미리보기 프록시 — NCP Static Map을 서버에서 호출해 이미지만 반환(키 서버전용). 키 없으면 501→클라 폴백 (D11) | `GET` |
@@ -47,7 +47,7 @@
 ## 설정 파일
 | 파일 | 용도 |
 |---|---|
-| `.env.local` | 실제 키 (커밋 금지): `SANGWON_API_KEY`, (선택)`KAKAO_REST_API_KEY`, (선택)`NCP_MAP_CLIENT_ID`/`NCP_MAP_CLIENT_SECRET`(서버), (선택)`NEXT_PUBLIC_NCP_MAP_CLIENT_ID`(Dynamic Map 클라, D12) |
+| `.env.local` | 실제 키 (커밋 금지): (선택)`SITE_URL`(커스텀 도메인=OG/canonical), `SANGWON_API_KEY`, (선택)`KAKAO_REST_API_KEY`, (선택)`NCP_MAP_CLIENT_ID`/`NCP_MAP_CLIENT_SECRET`(서버), (선택)`NEXT_PUBLIC_NCP_MAP_CLIENT_ID`(Dynamic Map 클라, D12) |
 | `.env.example` | 키 이름만 (커밋) |
 | `next.config.ts` | 프레임워크 설정 + `allowedDevOrigins`(핫스팟/사내망 IP로 모바일 dev 접속 허용, dev 전용) |
 | `tailwind.config.ts` / `tsconfig.json` | 프레임워크 설정 |

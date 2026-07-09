@@ -7,6 +7,29 @@
 
 ---
 
+## 2026-07-09 (추가) — 메타데이터 커스텀 도메인(`matjib.dimad.kr`) 고정
+**한 일**
+- `app/layout.tsx` 메타데이터 강화: 이전 세션이 넣은 `metadataBase` 폴백에 **두 약점**을 수정 —
+  (1) `SITE_URL`을 프로토콜 없이 넣으면 `new URL()` 크래시 → `resolveSiteUrl()`로 `https://` 자동 보강 + 끝 슬래시 제거,
+  (2) `metadataBase`만 있고 canonical/OG/twitter 부재 → `alternates.canonical`·`openGraph`·`twitter` 추가로 도메인 고정.
+- 우선순위: `SITE_URL` → `VERCEL_PROJECT_PRODUCTION_URL` → `http://localhost:3000`.
+- `.env.local`에 `SITE_URL=https://matjib.dimad.kr` 추가(`.env.example`엔 이미 키 존재).
+- 검증: `next build` 후 `next start`(3222)로 head 확인 — canonical·og:url·og:image·twitter:image 전부
+  `https://matjib.dimad.kr`. `resolveSiteUrl` 프로토콜 보강 3케이스 통과.
+
+**남은 사용자 액션**: 배포 시 **Vercel 환경변수에도 `SITE_URL=https://matjib.dimad.kr` 세팅** 필요
+  (안 넣으면 프로덕션은 `VERCEL_PROJECT_PRODUCTION_URL`=vercel.app으로 폴백). `.env.local`은 배포에 안 나감.
+
+## 2026-07-09 (추가) — 출발/도착 라벨 + 배포 도메인 확정 (D12 확장)
+**한 일**
+- 인터랙티브 지도 마커를 **출발(파랑)/도착(주황) 글자 라벨**형으로 교체(`MapModal` `pinIcon`), 모달 헤더·정적
+  썸네일 범례 문구도 "출발/도착" 명시. 색만으론 헷갈리던 걸 라벨로 해소.
+- **실제 도보 경로선(길 모양)은 보류 결정**(사용자 선택 "나중"): NAVER Directions(도보) API 필요 —
+  접근 제한/추가 비용이라 별도 작업으로. 지금은 출발·도착 두 지점 표시까지.
+- **배포 커스텀 도메인 = `matjib.dimad.kr`** 확정(사용자가 NCP Web 서비스 URL에 등록 완료). DECISIONS D12 반영.
+- 검증: `tsc`/`eslint`/`next build` 통과. 인터랙티브 지도 런타임(라벨 렌더)은 도메인 등록된 `matjib.dimad.kr`
+  배포 후 확인 예정(localhost는 미등록이라 로컬 authFailure).
+
 ## 2026-07-09 (추가) — 지도 탭→전체화면 인터랙티브 지도 (NAVER Dynamic Map, D12)
 **한 일**
 - 사용자 선택: 시트 정적 썸네일 **탭 → 전체화면 인터랙티브 지도**(핀줌·이동). "지도 JS 키는 노출이 정상이냐"

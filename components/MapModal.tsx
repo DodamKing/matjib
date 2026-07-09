@@ -48,10 +48,15 @@ function loadNaverMaps(clientId: string): Promise<void> {
   return mapsPromise;
 }
 
-function dotIcon(maps: NaverMaps, color: string) {
+// 출발/도착 글자 라벨이 붙은 마커. (실제 걷는 경로선은 도보 Directions 필요 → 보류, D12)
+function pinIcon(maps: NaverMaps, color: string, label: string) {
   return {
-    content: `<div style="width:20px;height:20px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.45)"></div>`,
-    anchor: new maps.Point(10, 10),
+    content:
+      `<div style="display:flex;align-items:center;gap:5px;white-space:nowrap;font-family:-apple-system,'Malgun Gothic',sans-serif">` +
+      `<span style="width:16px;height:16px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.45)"></span>` +
+      `<span style="background:${color};color:#fff;font-weight:800;font-size:12px;line-height:1;padding:4px 7px;border-radius:9px;box-shadow:0 1px 5px rgba(0,0,0,.35)">${label}</span>` +
+      `</div>`,
+    anchor: new maps.Point(11, 11),
   };
 }
 
@@ -78,8 +83,8 @@ export function MapModal({ place, userCoords, onClose }: Props) {
         const userLL = new maps.LatLng(userCoords.lat, userCoords.lng);
         const map = new maps.Map(ref.current, { center: placeLL, zoom: 16 });
 
-        new maps.Marker({ position: userLL, map, icon: dotIcon(maps, "#2563eb") });
-        new maps.Marker({ position: placeLL, map, icon: dotIcon(maps, "#f97316") });
+        new maps.Marker({ position: userLL, map, icon: pinIcon(maps, "#2563eb", "출발") });
+        new maps.Marker({ position: placeLL, map, icon: pinIcon(maps, "#f97316", "도착") });
 
         const sw = new maps.LatLng(
           Math.min(place.lat, userCoords.lat),
@@ -116,7 +121,7 @@ export function MapModal({ place, userCoords, onClose }: Props) {
       <div className="flex items-center justify-between gap-3 border-b border-zinc-100 px-4 py-3">
         <div className="min-w-0">
           <p className="truncate text-base font-extrabold text-zinc-900">{place.name}</p>
-          <p className="text-xs text-zinc-500">🔵 내 위치 · 🟠 {place.category} · 걸어서 약 {place.walkMin}분</p>
+          <p className="text-xs text-zinc-500">🔵 출발(내 위치) · 🟠 도착 · 걸어서 약 {place.walkMin}분</p>
         </div>
         <button
           onClick={onClose}
