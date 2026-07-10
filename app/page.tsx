@@ -10,6 +10,7 @@ import { LocationGate } from "@/components/LocationGate";
 import { CardDeck } from "@/components/CardDeck";
 import { SituationInput } from "@/components/SituationInput";
 import { PlaceSheet } from "@/components/PlaceSheet";
+import { SupportButton } from "@/components/SupportButton";
 
 const RADII: { label: string; value: WalkRadius }[] = [
   { label: "5분", value: 300 },
@@ -162,6 +163,8 @@ export default function Home() {
           onClose={() => setOpenPlace(null)}
         />
       )}
+
+      <SupportButton />
     </main>
   );
 }
