@@ -25,7 +25,6 @@
 | `PlaceSheet.tsx` | ✅ | 장소 상세 바텀시트 — 길찾기를 앱 내부에서 감쌈. 지도 미리보기(NCP 실지도 우선, 실패 시 방향·거리 로케이터 폴백)+출발/도착 범례+지도탭→인터랙티브(D12)+주소복사+내비앱 선택 (D11) | `PlaceSheet` |
 | `MapModal.tsx` | ✅ | 전체화면 인터랙티브 지도 — NAVER Web Dynamic Map(핀줌·이동), 시트 썸네일 탭 시 열림. 클라 JS 키(도메인제한), authFailure/키없음 시 안내 (D12) | `MapModal` |
 | `SituationInput.tsx` | ✅ | 상황 태그 다중 선택 칩 UI — 태그 세트는 부모가 모드별로 주입 (D5/D10) | `SituationInput` |
-| `SupportButton.tsx` | ✅ | 후원 버튼 「💉 개발자 카페인 수혈」 — `NEXT_PUBLIC_SUPPORT_URL`(공개 송금 링크) 있을 때만 푸터에 노출. PG·키·서버 없음, 외부 링크만 (D13) | `SupportButton` |
 
 ## 라이브러리 (`lib/`)
 | 파일 | 상태 | 책임 | 주요 export |
@@ -48,7 +47,7 @@
 ## 설정 파일
 | 파일 | 용도 |
 |---|---|
-| `.env.local` | 실제 키 (커밋 금지): (선택)`SITE_URL`(커스텀 도메인=OG/canonical), `SANGWON_API_KEY`, (선택)`KAKAO_REST_API_KEY`, (선택)`NCP_MAP_CLIENT_ID`/`NCP_MAP_CLIENT_SECRET`(서버), (선택)`NEXT_PUBLIC_NCP_MAP_CLIENT_ID`(Dynamic Map 클라, D12), (선택)`NEXT_PUBLIC_SUPPORT_URL`(후원 송금 링크, D13) |
+| `.env.local` | 실제 키 (커밋 금지): (선택)`SITE_URL`(커스텀 도메인=OG/canonical), `SANGWON_API_KEY`, (선택)`KAKAO_REST_API_KEY`, (선택)`NCP_MAP_CLIENT_ID`/`NCP_MAP_CLIENT_SECRET`(서버), (선택)`NEXT_PUBLIC_NCP_MAP_CLIENT_ID`(Dynamic Map 클라, D12) |
 | `.env.example` | 키 이름만 (커밋) |
 | `next.config.ts` | 프레임워크 설정 + `allowedDevOrigins`(핫스팟/사내망 IP로 모바일 dev 접속 허용, dev 전용) |
 | `tailwind.config.ts` / `tsconfig.json` | 프레임워크 설정 |
