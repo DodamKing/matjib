@@ -10,7 +10,7 @@
 | 경로 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
 | `app/layout.tsx` | ✅ | 루트 레이아웃 + 메타데이터. `metadataBase`/canonical/OG/twitter를 `SITE_URL`→`VERCEL_PROJECT_PRODUCTION_URL`→localhost 순으로 해석(프로토콜 자동 보강). 폰트/전역 스타일 | `default`, `metadata` |
-| `app/page.tsx` | ✅ | 메인: 위치게이트 → 모드(밥집/카페/술집) → 태그선택 → 도보필터 → 카드덱 → 셔플 + **3곳 공유 버튼**(D17). `/api/recommend` fetch + 로딩/에러 상태. `openPlace` 상태로 `PlaceSheet` 마운트 (D11) | `default` |
+| `app/page.tsx` | ✅ | 메인. 큰 헤더 상단 → **카드덱+셔플+공유(화면 위, 한 뷰에)** → 조정(모드/도보/상황태그) 데크 아래로 (D20/B). 위치 전엔 헤더+게이트. `/api/recommend` fetch, `openPlace`→`PlaceSheet`(D11). 공유 복사 폴백(D20) | `default` |
 | `app/share/[rx]/page.tsx` | ✅ | 공유 처방전 뷰(서버) — URL의 3곳 재현(읽기전용)+길찾기+"나도 받기" CTA. OG 제목/설명에 상호명, `noindex` (D17) | `default`, `generateMetadata` |
 | `app/share/[rx]/opengraph-image.tsx` | ✅ | 공유 링크 OG 이미지 — 3곳 카드 1200×630(한글 폰트 `ogFont`) = 카톡/SNS 미리보기 훅 (D17) | `default` |
 | `app/api/recommend/route.ts` | ✅ | 핵심 API(Edge/서울). 반경조회→모드필터→태그필터→거리순 상위20→3카드+풀. 키는 여기서만 | `POST` |

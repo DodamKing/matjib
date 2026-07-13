@@ -75,6 +75,32 @@ export default function Home() {
   }
 
   // 처방전 공유(D17): 그 3곳을 URL에 담아 링크로. 모바일은 Web Share, 아니면 클립보드 복사.
+  // URL 복사: 보안 컨텍스트면 Clipboard API, 아니면(LAN·http) 레거시 execCommand 폴백.
+  async function copyUrl(url: string): Promise<boolean> {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(url);
+        return true;
+      } catch {
+        /* 폴백으로 진행 */
+      }
+    }
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+
   async function handleShare() {
     if (cards.length === 0) return;
     const token = encodeRx(cardsToRx(cards, { modeLabel: MODES[mode].label, band }));
@@ -87,18 +113,19 @@ export default function Home() {
         return; // 사용자가 공유 시트를 취소 — 조용히 종료
       }
     }
-    try {
-      await navigator.clipboard.writeText(url);
+    if (await copyUrl(url)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
-    } catch (e) {
-      console.error("[Home] 공유 링크 복사 실패:", e);
+    } else {
+      // 복사도 불가한 환경 — 링크를 직접 노출해 수동 복사.
+      window.prompt("이 링크를 복사해 공유하세요:", url);
     }
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-amber-50 px-5 py-10 text-zinc-900">
-      <header className="mb-8 text-center">
+    <main className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-amber-50 px-5 py-6 text-zinc-900">
+      {/* 큰 2줄 헤더는 항상 상단(브랜드). 결과 화면에서도 유지 — 데크가 바로 아래 와서 셔플이 한 화면에 담김 (D20/B) */}
+      <header className="mb-6 mt-2 text-center">
         <h1 className="text-2xl font-extrabold leading-snug tracking-tight">
           맛집 안 찾아줍니다.
           <br />
@@ -114,42 +141,9 @@ export default function Home() {
           <LocationGate onLocate={handleLocate} />
         </div>
       ) : (
-        <div className="flex flex-col gap-5">
-          {/* 모드 전환: 밥집 / 카페 / 술집 (기본 밥집) */}
-          <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white p-1.5 shadow-sm">
-            {MODE_LIST.map((m) => (
-              <button
-                key={m.id}
-                onClick={() => handleMode(m.id)}
-                className={`rounded-xl py-2.5 text-sm font-bold transition ${
-                  mode === m.id ? "bg-orange-500 text-white shadow" : "text-zinc-500"
-                }`}
-              >
-                {m.emoji} {m.label}
-              </button>
-            ))}
-          </div>
-
-          {/* 상황 태그 (현재 모드 세트, 다중 선택, 미선택 = 아무거나) */}
-          <SituationInput tags={MODES[mode].tags} selected={tags} onChange={handleTags} />
-
-          {/* 도보 시간 필터 (겹치지 않는 구간: 5분=~5분, 10분=5~10분, 15분=10~15분) */}
-          <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white p-1.5 shadow-sm">
-            {WALK_BANDS.map((b) => (
-              <button
-                key={b.band}
-                onClick={() => handleBand(b.band)}
-                className={`rounded-xl py-2.5 text-sm font-bold transition ${
-                  band === b.band
-                    ? "bg-orange-500 text-white shadow"
-                    : "text-zinc-500"
-                }`}
-              >
-                도보 {b.label}
-              </button>
-            ))}
-          </div>
-
+        // 결과 화면: (주인공) 카드 3장 + 셔플 → 조정 컨트롤(아래)
+        <div className="flex flex-col gap-4">
+          {/* 결과 = 화면 위. 셔플 롤 전체가 한 화면에 담기게 */}
           {loading ? (
             <div className="rounded-2xl bg-white p-8 text-center text-sm text-zinc-500 shadow-sm">
               걸어갈 만한 3곳 고르는 중… 🚶
@@ -182,6 +176,42 @@ export default function Home() {
               다른 도보 시간이나 다른 모드를 눌러보세요. 🚶
             </div>
           )}
+
+          {/* 조정 컨트롤: 데크 아래로. 모드 / 도보 / 상황 태그(펼침) */}
+          <div className="mt-1 flex flex-col gap-3 border-t border-orange-100 pt-4">
+            <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white p-1.5 shadow-sm">
+              {MODE_LIST.map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => handleMode(m.id)}
+                  className={`rounded-xl py-2.5 text-sm font-bold transition ${
+                    mode === m.id ? "bg-orange-500 text-white shadow" : "text-zinc-500"
+                  }`}
+                >
+                  {m.emoji} {m.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white p-1.5 shadow-sm">
+              {WALK_BANDS.map((b) => (
+                <button
+                  key={b.band}
+                  onClick={() => handleBand(b.band)}
+                  className={`rounded-xl py-2.5 text-sm font-bold transition ${
+                    band === b.band
+                      ? "bg-orange-500 text-white shadow"
+                      : "text-zinc-500"
+                  }`}
+                >
+                  도보 {b.label}
+                </button>
+              ))}
+            </div>
+
+            {/* 상황 태그 (펼침, 데크 아래) */}
+            <SituationInput tags={MODES[mode].tags} selected={tags} onChange={handleTags} />
+          </div>
         </div>
       )}
 
