@@ -42,15 +42,30 @@ body {
     opacity: 1;
   }
 }
+/* 셔플 롤이 슬롯별로 딱 멈출 때의 pop (D19) */
+@keyframes card-settle {
+  0% {
+    transform: translateY(7px) scale(0.97);
+    opacity: 0.5;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
 .animate-sheet-up {
   animation: sheet-up 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .animate-fade-in {
   animation: fade-in 0.2s ease-out both;
 }
+.animate-card-settle {
+  animation: card-settle 0.19s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 @media (prefers-reduced-motion: reduce) {
   .animate-sheet-up,
-  .animate-fade-in {
+  .animate-fade-in,
+  .animate-card-settle {
     animation: none;
   }
 }

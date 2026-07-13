@@ -164,6 +164,7 @@ export default function Home() {
             <div className="flex flex-col gap-3">
               <CardDeck
                 cards={cards}
+                pool={pool}
                 onShuffle={() => setCards(pickThree(pool))}
                 onOpen={setOpenPlace}
               />

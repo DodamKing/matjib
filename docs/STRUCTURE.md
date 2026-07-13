@@ -23,7 +23,7 @@
 |---|---|---|---|
 | `LocationGate.tsx` | ✅ | 위치 동의 UI + geolocation 획득, 거부/에러 상태 구분 (+강남역 둘러보기 fallback) | `LocationGate` |
 | `Card.tsx` | ✅ | 식당 카드 1개 (상호·업종·도보). 길찾기 버튼은 외부링크 대신 `onOpen(r)`로 상세 시트 열기 (D11) | `Card` |
-| `CardDeck.tsx` | ✅ | 카드 3개 + 셔플 버튼 (Zero-Scroll). `onOpen`을 Card로 전달 | `CardDeck` |
+| `CardDeck.tsx` | ✅ | 카드 3개 + 셔플 버튼 (Zero-Scroll). 셔플/새 결과 시 `pool` 슬롯머신 롤→순차 정지 애니메이션, reduced-motion 대응 (D19) | `CardDeck` |
 | `PlaceSheet.tsx` | ✅ | 장소 상세 바텀시트 — 길찾기를 앱 내부에서 감쌈. 지도 미리보기(NCP 실지도 우선, 실패 시 방향·거리 로케이터 폴백)+출발/도착 범례+지도탭→인터랙티브(D12)+주소복사+내비앱 선택 (D11) | `PlaceSheet` |
 | `MapModal.tsx` | ✅ | 전체화면 인터랙티브 지도 — NAVER Web Dynamic Map(핀줌·이동), 시트 썸네일 탭 시 열림. 클라 JS 키(도메인제한), authFailure/키없음 시 안내 (D12) | `MapModal` |
 | `SituationInput.tsx` | ✅ | 상황 태그 다중 선택 칩 UI — 태그 세트는 부모가 모드별로 주입 (D5/D10) | `SituationInput` |
