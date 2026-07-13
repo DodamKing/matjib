@@ -81,7 +81,7 @@ export default function Home() {
     const url = `${window.location.origin}/share/${token}`;
     if (navigator.share) {
       try {
-        await navigator.share({ title: "💊 점심 처방전", text: "오늘 점심 이 3곳 중에 골라!", url });
+        await navigator.share({ title: "📍 걸어서 갈 만한 3곳", text: "이 근처 걸어서 갈 만한 3곳!", url });
         return;
       } catch {
         return; // 사용자가 공유 시트를 취소 — 조용히 종료
@@ -99,11 +99,13 @@ export default function Home() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-amber-50 px-5 py-10 text-zinc-900">
       <header className="mb-8 text-center">
-        <h1 className="text-2xl font-extrabold tracking-tight">
-          🩺 오늘 뭐 먹지 클리닉
+        <h1 className="text-2xl font-extrabold leading-snug tracking-tight">
+          맛집 안 찾아줍니다.
+          <br />
+          갈 데를 정해줍니다.
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          고민하지 마세요. 가까운 3곳만 처방해 드립니다.
+        <p className="mt-2 text-sm text-zinc-500">
+          낯선 동네에서 검색·비교 없이, 걸어서 갈 식당 3곳만.
         </p>
       </header>
 
@@ -150,7 +152,7 @@ export default function Home() {
 
           {loading ? (
             <div className="rounded-2xl bg-white p-8 text-center text-sm text-zinc-500 shadow-sm">
-              가까운 맛집을 처방 중이에요… 🩺
+              걸어갈 만한 3곳 고르는 중… 🚶
             </div>
           ) : error ? (
             <div className="rounded-2xl bg-white p-8 text-center text-sm text-red-500 shadow-sm">
@@ -169,7 +171,7 @@ export default function Home() {
                 onClick={handleShare}
                 className="w-full rounded-2xl bg-orange-500 py-3.5 text-base font-bold text-white shadow-lg shadow-orange-500/30 transition active:scale-95"
               >
-                {copied ? "링크 복사됨 ✓ 붙여넣기 하세요" : "💊 이 처방전 공유하기"}
+                {copied ? "링크 복사됨 ✓ 붙여넣기 하세요" : "📤 이 3곳 공유하기"}
               </button>
             </div>
           ) : (

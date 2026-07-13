@@ -36,7 +36,7 @@ export function LocationGate({ onLocate }: Props) {
         disabled={status === "loading"}
         className="w-full rounded-2xl bg-orange-500 px-6 py-4 text-lg font-bold text-white shadow-lg shadow-orange-500/30 transition active:scale-95 disabled:opacity-60"
       >
-        {status === "loading" ? "위치 확인 중…" : "📍 내 위치로 맛집 처방받기"}
+        {status === "loading" ? "위치 확인 중…" : "📍 지금 위치로 3곳 받기"}
       </button>
 
       {status === "denied" && (

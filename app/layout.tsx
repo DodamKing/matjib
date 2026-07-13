@@ -28,8 +28,9 @@ function resolveSiteUrl(): string {
 }
 
 const siteUrl = resolveSiteUrl();
-const TITLE = "오늘 뭐 먹지 클리닉 | matjib";
-const DESCRIPTION = "고민 그만하세요. 걸어서 갈 만한 3곳만 딱 처방해 드립니다.";
+const TITLE = "맛집 안 찾아줍니다, 갈 데를 정해줍니다 | matjib";
+const DESCRIPTION =
+  "처음 온 동네에서 뭐 먹을지 검색하기 귀찮을 때. 별점·순위 없이 지금 내 위치 기준 걸어서 5~15분 식당을 딱 3곳만. 위치 동의 한 번, 가입·광고 없음.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

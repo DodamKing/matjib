@@ -20,7 +20,7 @@ export function CardDeck({ cards, onShuffle, onOpen }: Props) {
         onClick={onShuffle}
         className="mt-1 w-full rounded-2xl border-2 border-dashed border-orange-300 py-3.5 text-base font-bold text-orange-600 transition active:scale-95"
       >
-        🎲 마음에 안 들어요, 다시 처방
+        🎲 다른 3곳 보기
       </button>
     </div>
   );

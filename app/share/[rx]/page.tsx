@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const payload = decodeRx(rx);
   if (!payload) {
     return {
-      title: "처방전을 찾을 수 없어요 | matjib",
+      title: "3곳을 찾을 수 없어요 | matjib",
       robots: { index: false, follow: false },
     };
   }
@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const scope = [payload.m, payload.b ? `도보 ${payload.b}분` : null]
     .filter(Boolean)
     .join(" · ");
-  const title = `💊 점심 처방전: ${names}`;
-  const description = `${scope ? scope + " — " : ""}누가 보낸 처방전이에요. 나도 내 주변 3곳 받아보기 →`;
+  const title = `📍 걸어서 갈 만한 3곳: ${names}`;
+  const description = `${scope ? scope + " — " : ""}낯선 동네에서 걸어갈 만한 3곳이에요. 나도 내 주변 3곳 받아보기 →`;
   return {
     title,
     description,
@@ -39,13 +39,13 @@ export default async function SharePage({ params }: Params) {
   if (!payload) {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center gap-5 bg-amber-50 px-6 text-center text-zinc-900">
-        <p className="text-lg font-extrabold">처방전을 열 수 없어요 💊</p>
+        <p className="text-lg font-extrabold">링크를 열 수 없어요 📍</p>
         <p className="text-sm text-zinc-500">링크가 오래됐거나 잘못됐어요.</p>
         <Link
           href="/"
           className="rounded-2xl bg-orange-500 px-6 py-4 text-base font-bold text-white shadow-lg shadow-orange-500/30"
         >
-          📍 내 주변 맛집 처방받기
+          📍 내 주변 3곳 받기
         </Link>
       </main>
     );
@@ -59,9 +59,9 @@ export default async function SharePage({ params }: Params) {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-amber-50 px-5 py-10 text-zinc-900">
       <header className="mb-6 text-center">
-        <h1 className="text-2xl font-extrabold tracking-tight">💊 받은 점심 처방전</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight">📍 누가 보낸 맛집 3곳</h1>
         <p className="mt-1 text-sm text-zinc-500">
-          누군가 걸어서 갈 만한 3곳을 처방해 보냈어요.{scope ? ` (${scope})` : ""}
+          걸어서 갈 만한 근처 3곳을 정해서 보냈어요.{scope ? ` (${scope})` : ""}
         </p>
       </header>
 
@@ -100,7 +100,7 @@ export default async function SharePage({ params }: Params) {
         href="/"
         className="mt-6 rounded-2xl bg-orange-500 py-4 text-center text-base font-bold text-white shadow-lg shadow-orange-500/30"
       >
-        📍 나도 내 주변 맛집 처방받기 →
+        📍 나도 내 주변 3곳 받기 →
       </Link>
       <p className="mt-3 text-center text-[11px] text-zinc-400">
         matjib · 걸어서 5~15분 · 광고·협찬 없음

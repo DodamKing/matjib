@@ -42,7 +42,7 @@ export default async function Image({ params }: Params) {
               fontWeight: 700,
             }}
           >
-            💊 오늘 점심, 이 3곳 처방
+            📍 걸어서 갈 만한 근처 3곳
           </div>
           <div style={{ display: "flex", fontSize: 26, lineHeight: 1.3, color: "#a1a1aa" }}>
             matjib · 걸어서 5~15분{scope ? ` · ${scope}` : ""}
