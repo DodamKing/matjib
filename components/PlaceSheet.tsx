@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { Restaurant } from "@/types";
 import { haversine, bearingDeg, compass8 } from "@/lib/distance";
 import { NAV_APPS } from "@/lib/navlinks";
+import { useHistoryDismiss } from "@/lib/useHistoryDismiss";
 import { MapModal } from "@/components/MapModal";
 
 // Dynamic Map 클라 키가 있으면 지도 썸네일 탭 → 전체화면 인터랙티브 지도 활성화 (D12).
@@ -34,6 +35,9 @@ export function PlaceSheet({ place, userCoords, onClose }: Props) {
     setMapLoaded(false);
     setMapFailed(false);
   }, [place.id]);
+
+  // 폰 뒤로가기 = 페이지 이탈이 아니라 시트만 닫기. (지도가 위에 떠 있으면 지도가 먼저 닫힘 — 중첩 id 처리)
+  useHistoryDismiss(onClose);
 
   // ESC 닫기 + 열려 있는 동안 배경 스크롤 잠금
   useEffect(() => {

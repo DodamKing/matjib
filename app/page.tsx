@@ -7,6 +7,7 @@ import type { Restaurant, RecommendResponse, WalkBand } from "@/types";
 import { pickThree } from "@/lib/shuffle";
 import { MODE_LIST, MODES, type ModeId } from "@/lib/modes";
 import { WALK_BANDS, DEFAULT_BAND } from "@/lib/walkBands";
+import { encodeRx, cardsToRx } from "@/lib/shareLink";
 import { LocationGate } from "@/components/LocationGate";
 import { CardDeck } from "@/components/CardDeck";
 import { SituationInput } from "@/components/SituationInput";
@@ -22,6 +23,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [openPlace, setOpenPlace] = useState<Restaurant | null>(null);
+  const [copied, setCopied] = useState(false);
 
   async function prescribe(
     c: { lat: number; lng: number },
@@ -70,6 +72,28 @@ export default function Home() {
   function handleTags(next: string[]) {
     setTags(next);
     if (coords) prescribe(coords, mode, band, next);
+  }
+
+  // 처방전 공유(D17): 그 3곳을 URL에 담아 링크로. 모바일은 Web Share, 아니면 클립보드 복사.
+  async function handleShare() {
+    if (cards.length === 0) return;
+    const token = encodeRx(cardsToRx(cards, { modeLabel: MODES[mode].label, band }));
+    const url = `${window.location.origin}/share/${token}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "💊 점심 처방전", text: "오늘 점심 이 3곳 중에 골라!", url });
+        return;
+      } catch {
+        return; // 사용자가 공유 시트를 취소 — 조용히 종료
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch (e) {
+      console.error("[Home] 공유 링크 복사 실패:", e);
+    }
   }
 
   return (
@@ -135,11 +159,19 @@ export default function Home() {
               잠시 후 다시 시도해 주세요. 🙏
             </div>
           ) : cards.length > 0 ? (
-            <CardDeck
-              cards={cards}
-              onShuffle={() => setCards(pickThree(pool))}
-              onOpen={setOpenPlace}
-            />
+            <div className="flex flex-col gap-3">
+              <CardDeck
+                cards={cards}
+                onShuffle={() => setCards(pickThree(pool))}
+                onOpen={setOpenPlace}
+              />
+              <button
+                onClick={handleShare}
+                className="w-full rounded-2xl bg-orange-500 py-3.5 text-base font-bold text-white shadow-lg shadow-orange-500/30 transition active:scale-95"
+              >
+                {copied ? "링크 복사됨 ✓ 붙여넣기 하세요" : "💊 이 처방전 공유하기"}
+              </button>
+            </div>
           ) : (
             <div className="rounded-2xl bg-white p-8 text-center text-sm text-zinc-500 shadow-sm">
               이 도보 구간엔 {MODES[mode].label}이 없어요.

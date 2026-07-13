@@ -12,6 +12,12 @@
         ▼
   6. 응답 { cards:[≤3], pool:[≤20] } 수신 → 카드 3개 렌더 (Zero-Scroll)
   7. [셔플] → 재요청 없이 반환된 pool에서 로컬 pickThree()로 새 3개
+  8. [처방전 공유, D17] 3곳을 URL(base64url)에 담아 navigator.share/클립보드 → /share/<rx>
+
+[공유 처방전 — /share/[rx] (서버, D17)]
+  URL의 rx 디코딩 → 읽기전용 3곳 뷰 + "나도 받기" CTA (저장소 없음, 링크가 곧 데이터)
+  generateMetadata: OG 제목/설명에 상호명(카톡 미리보기 훅) + noindex
+  opengraph-image: satori로 3곳 카드 1200×630 (한글 폰트 런타임 로드)
 
 [Next.js API Route — /api/recommend (Edge/서울, 실데이터 조회 + 키 은닉, D9)]
   POST { lat, lng, band, mode?, tags? }   (band = 5|10|15, lib/walkBands.ts, D14)

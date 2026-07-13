@@ -10,7 +10,9 @@
 | 경로 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
 | `app/layout.tsx` | ✅ | 루트 레이아웃 + 메타데이터. `metadataBase`/canonical/OG/twitter를 `SITE_URL`→`VERCEL_PROJECT_PRODUCTION_URL`→localhost 순으로 해석(프로토콜 자동 보강). 폰트/전역 스타일 | `default`, `metadata` |
-| `app/page.tsx` | ✅ | 메인: 위치게이트 → 모드(밥집/카페/술집) → 태그선택 → 도보필터 → 카드덱 → 셔플. `/api/recommend` fetch + 로딩/에러 상태. `openPlace` 상태로 `PlaceSheet` 마운트 (D11) | `default` |
+| `app/page.tsx` | ✅ | 메인: 위치게이트 → 모드(밥집/카페/술집) → 태그선택 → 도보필터 → 카드덱 → 셔플 + **처방전 공유 버튼**(D17). `/api/recommend` fetch + 로딩/에러 상태. `openPlace` 상태로 `PlaceSheet` 마운트 (D11) | `default` |
+| `app/share/[rx]/page.tsx` | ✅ | 공유 처방전 뷰(서버) — URL의 3곳 재현(읽기전용)+길찾기+"나도 받기" CTA. OG 제목/설명에 상호명, `noindex` (D17) | `default`, `generateMetadata` |
+| `app/share/[rx]/opengraph-image.tsx` | ✅ | 공유 링크 OG 이미지 — 3곳 카드 1200×630(한글 폰트 `ogFont`) = 카톡/SNS 미리보기 훅 (D17) | `default` |
 | `app/api/recommend/route.ts` | ✅ | 핵심 API(Edge/서울). 반경조회→모드필터→태그필터→거리순 상위20→3카드+풀. 키는 여기서만 | `POST` |
 | `app/api/staticmap/route.ts` | ✅ | 시트 지도 미리보기 프록시 — NCP Static Map을 서버에서 호출해 이미지만 반환(키 서버전용). 키 없으면 501→클라 폴백 (D11) | `GET` |
 | `app/icon.svg` | ✅ | 파비콘 — 3카드 팬 모양 마크 (오렌지 톤) | — |
@@ -37,6 +39,9 @@
 | `match.ts` | ✅ | 태그 키워드 → 업종 필터링(모드 태그셋 인자로 받음), LLM 미사용 (D5) | `filterByTags()` |
 | `distance.ts` | ✅ | 도보분↔미터 변환, 거리 계산 + 방위(미니 로케이터용, D11) | `haversine()`, `walkMinutes()`, `bearingDeg()`, `compass8()` |
 | `walkBands.ts` | ✅ | 도보 밴드(구간) 단일 원천 — 5/10/15분 겹치지 않는 구간 정의·필터 (D14) | `WALK_BANDS`, `DEFAULT_BAND`, `resolveBand()`, `inBand()`, `WalkBandDef` |
+| `useHistoryDismiss.ts` | ✅ | 오버레이(시트/지도) 브라우저 히스토리 연동 — 폰 뒤로가기=오버레이만 닫기, 중첩·StrictMode 안전 (D16) | `useHistoryDismiss()` |
+| `shareLink.ts` | ✅ | 처방전 공유 링크 — 3곳을 URL(base64url)에 인코딩/디코딩, 저장소 없음 (D17) | `encodeRx()`, `decodeRx()`, `cardsToRx()`, `rxToRestaurants()` |
+| `ogFont.ts` | ✅ | OG 이미지용 한글 폰트(Pretendard OTF) 런타임 로더+캐시 — satori 한글 렌더 (D17) | `loadKoreanFont()` |
 | `shuffle.ts` | ✅ | 후보 풀 구성(밴드 구간 필터) + 밴드 내 공정 랜덤 추첨 (D3/D14/D15) | `buildPool()`, `sample()`, `pickThree()` |
 | `mock.ts` | ✅ | 더미 식당 26개 — **제품 런타임 미사용(개발/오프라인용)**. `MOCK_CENTER`(강남역)만 위치거부 폴백 좌표로 실사용 | `MOCK_RESTAURANTS`, `MOCK_CENTER` |
 

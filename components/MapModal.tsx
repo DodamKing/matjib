@@ -4,6 +4,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Restaurant } from "@/types";
+import { useHistoryDismiss } from "@/lib/useHistoryDismiss";
 
 type Props = {
   place: Restaurant;
@@ -65,6 +66,9 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_NCP_MAP_CLIENT_ID;
 export function MapModal({ place, userCoords, onClose }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(!CLIENT_ID); // 키 없으면 처음부터 안내
+
+  // 폰 뒤로가기 = 지도만 닫기 (아래 시트로 복귀, 페이지 이탈 아님).
+  useHistoryDismiss(onClose);
 
   useEffect(() => {
     if (!CLIENT_ID) return;
