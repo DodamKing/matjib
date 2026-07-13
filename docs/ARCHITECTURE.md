@@ -7,19 +7,19 @@
   1. navigator.geolocation → { lat, lng }   (거부 시 MOCK_CENTER=강남역 좌표로 폴백, 이후 동일)
   2. 모드 선택: 🍚 밥집 / ☕ 카페 / 🍺 술집 (기본 밥집, lib/modes.ts, D10)
   3. (선택) 상황 태그 다중 선택: 현재 모드 세트 (lib/tags.ts, D5/D10)
-  4. 도보시간 선택: 5분(300m) / 10분(600m) / 15분(1km)
-  5. fetch POST /api/recommend { lat, lng, mode, radius, tags }  → 로딩/에러 상태 처리
+  4. 도보시간 선택: 5분(~5분) / 10분(5~10분) / 15분(10~15분) — 겹치지 않는 구간(밴드), D14
+  5. fetch POST /api/recommend { lat, lng, mode, band, tags }  → 로딩/에러 상태 처리
         ▼
   6. 응답 { cards:[≤3], pool:[≤20] } 수신 → 카드 3개 렌더 (Zero-Scroll)
   7. [셔플] → 재요청 없이 반환된 pool에서 로컬 pickThree()로 새 3개
 
 [Next.js API Route — /api/recommend (Edge/서울, 실데이터 조회 + 키 은닉, D9)]
-  POST { lat, lng, radius, mode?, tags? }
-  → sangwon.searchInRadius: sdsc2 「반경내 상가업소 조회」 (radius, cx=lng, cy=lat, indsLclsCd=I2 음식)
-  → buildPool(): 반경 재확인 + walkMin 계산, 거리순 정렬 (lib/shuffle.ts, D3)
+  POST { lat, lng, band, mode?, tags? }   (band = 5|10|15, lib/walkBands.ts, D14)
+  → sangwon.searchInRadius: sdsc2 「반경내 상가업소 조회」 (radius=밴드 상한 커버, cx=lng, cy=lat, indsLclsCd=I2 음식)
+  → buildPool(): walkMin 계산 + 밴드 구간(minMin<walkMin<=maxMin) 필터, 거리순 정렬 (lib/shuffle.ts, D3/D14)
   → mode.match(): 소분류명으로 밥집/카페/술집 분리 (lib/modes.ts, D10)
   → filterByTags(): 모드 태그 키워드로 category 필터, 미선택/미매칭 시 원본 풀 (lib/match.ts, D5)
-  → 거리순 상위 20개로 캡 → pickThree(): 공정 셔플 3개 (품질 랭킹 X — D3)
+  → sample(): 밴드 내 공정 랜덤 20개로 풀 구성(최근접 아님 — 밀집지 1분 반복 해소, D15) → pickThree(): 3개 (품질 랭킹 X — D3)
   → (선택, 미구현) 카카오 로컬로 길찾기 링크 보강
   → 응답: { cards: [≤3], pool: [≤20] }
 ```
@@ -76,6 +76,6 @@ type Restaurant = {
 };
 
 type SituationTag = { id: string; label: string; keywords: string[] };
-type RecommendRequest = { lat: number; lng: number; radius: 300|600|1000; mode?: "meal"|"cafe"|"bar"; tags?: string[] };
+type RecommendRequest = { lat: number; lng: number; band: 5|10|15; mode?: "meal"|"cafe"|"bar"; tags?: string[] };
 type RecommendResponse = { cards: Restaurant[]; /* ≤3 */ pool: Restaurant[]; /* ≤20, 셔플용 */ };
 ```

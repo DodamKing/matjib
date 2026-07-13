@@ -1,6 +1,6 @@
 // 공유 타입. 상세는 docs/ARCHITECTURE.md 참조.
 
-export type WalkRadius = 300 | 600 | 1000; // 도보 5/10/15분
+export type WalkBand = 5 | 10 | 15; // 도보 밴드(구간): 5=0~5분, 10=5~10분, 15=10~15분 (D14)
 
 export type Restaurant = {
   id: string; // 상가업소번호
@@ -25,7 +25,7 @@ export type SituationTag = {
 export type RecommendRequest = {
   lat: number;
   lng: number;
-  radius: WalkRadius;
+  band: WalkBand;
   mode?: "meal" | "cafe" | "bar"; // 검색 모드 (D10). 미지정 시 밥집
   tags?: string[]; // 선택된 상황 태그 id들 (D5: 태그 매칭, LLM 미사용)
 };

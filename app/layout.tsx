@@ -29,7 +29,7 @@ function resolveSiteUrl(): string {
 
 const siteUrl = resolveSiteUrl();
 const TITLE = "오늘 뭐 먹지 클리닉 | matjib";
-const DESCRIPTION = "고민 그만하세요. 가까운 3곳만 AI가 딱 처방해 드립니다.";
+const DESCRIPTION = "고민 그만하세요. 걸어서 갈 만한 3곳만 딱 처방해 드립니다.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

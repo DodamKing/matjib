@@ -1,7 +1,7 @@
 // 소상공인시장진흥공단 「반경내 상가업소 조회」 클라이언트 (DECISIONS D2).
 // 키는 서버(API Route)에서만 사용 (SANGWON_API_KEY). 클라 번들 노출 금지.
 // 엔드포인트/필드/음식코드는 2026-07-09 실 API로 검증 확정 (WORKLOG 참조).
-import type { RestaurantSource, WalkRadius } from "@/types";
+import type { RestaurantSource } from "@/types";
 
 const BASE =
   "https://apis.data.go.kr/B553077/api/open/sdsc2/storeListInRadius";
@@ -23,7 +23,7 @@ type SangwonItem = {
 export async function searchInRadius(args: {
   lat: number;
   lng: number;
-  radius: WalkRadius;
+  radius: number; // 밴드 상한을 커버하는 조회 반경(m). 실제 밴드 필터는 buildPool에서 walkMin으로.
 }): Promise<RestaurantSource[]> {
   const key = process.env.SANGWON_API_KEY;
   if (!key) throw new Error("SANGWON_API_KEY 미설정");

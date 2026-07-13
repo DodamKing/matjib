@@ -36,13 +36,14 @@
 | `tags.ts` | ✅ | 모드별 상황 태그 세트 + 키워드 매핑 (D5/D10) | `MEAL_TAGS`, `CAFE_TAGS`, `BAR_TAGS` |
 | `match.ts` | ✅ | 태그 키워드 → 업종 필터링(모드 태그셋 인자로 받음), LLM 미사용 (D5) | `filterByTags()` |
 | `distance.ts` | ✅ | 도보분↔미터 변환, 거리 계산 + 방위(미니 로케이터용, D11) | `haversine()`, `walkMinutes()`, `bearingDeg()`, `compass8()` |
-| `shuffle.ts` | ✅ | 후보 풀 구성 + 공정 셔플 (D3) | `buildPool()`, `pickThree()` |
+| `walkBands.ts` | ✅ | 도보 밴드(구간) 단일 원천 — 5/10/15분 겹치지 않는 구간 정의·필터 (D14) | `WALK_BANDS`, `DEFAULT_BAND`, `resolveBand()`, `inBand()`, `WalkBandDef` |
+| `shuffle.ts` | ✅ | 후보 풀 구성(밴드 구간 필터) + 밴드 내 공정 랜덤 추첨 (D3/D14/D15) | `buildPool()`, `sample()`, `pickThree()` |
 | `mock.ts` | ✅ | 더미 식당 26개 — **제품 런타임 미사용(개발/오프라인용)**. `MOCK_CENTER`(강남역)만 위치거부 폴백 좌표로 실사용 | `MOCK_RESTAURANTS`, `MOCK_CENTER` |
 
 ## 타입 (`types/`)
 | 파일 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
-| `index.ts` | ✅ | 공유 타입 | `Restaurant`, `RestaurantSource`, `SituationTag`, `RecommendRequest`, `RecommendResponse`, `WalkRadius` |
+| `index.ts` | ✅ | 공유 타입 | `Restaurant`, `RestaurantSource`, `SituationTag`, `RecommendRequest`, `RecommendResponse`, `WalkBand` |
 
 ## 설정 파일
 | 파일 | 용도 |

@@ -26,7 +26,14 @@ export function PlaceSheet({ place, userCoords, onClose }: Props) {
   const [copied, setCopied] = useState(false);
   // 실지도 미리보기(NCP Static Map, 서버 프록시). 키 미설정/실패 시 방향·거리 로케이터로 폴백 (D11).
   const [mapFailed, setMapFailed] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false); // 이미지 도착 전 스피너 표시용
   const [showBigMap, setShowBigMap] = useState(false); // 전체화면 인터랙티브 지도 (D12)
+
+  // 다른 장소로 바뀌면 지도 로드/실패 상태 초기화 (시트는 리마운트 없이 place만 교체될 수 있음).
+  useEffect(() => {
+    setMapLoaded(false);
+    setMapFailed(false);
+  }, [place.id]);
 
   // ESC 닫기 + 열려 있는 동안 배경 스크롤 잠금
   useEffect(() => {
@@ -48,9 +55,10 @@ export function PlaceSheet({ place, userCoords, onClose }: Props) {
   const bearing = bearingDeg(userCoords.lat, userCoords.lng, place.lat, place.lng);
   const direction = compass8(bearing);
 
+  // 표시 박스(≈ max-w-md, h-36)에 맞춘 크기. 과거 600×320은 박스 대비 과대 → 전송 바이트만 낭비였음.
   const mapSrc =
     `/api/staticmap?plat=${place.lat}&plng=${place.lng}` +
-    `&ulat=${userCoords.lat}&ulng=${userCoords.lng}&w=600&h=320`;
+    `&ulat=${userCoords.lat}&ulng=${userCoords.lng}&w=440&h=176`;
 
   async function copyAddress() {
     try {
@@ -97,9 +105,18 @@ export function PlaceSheet({ place, userCoords, onClose }: Props) {
               <img
                 src={mapSrc}
                 alt={`${place.name} 위치 지도`}
+                onLoad={() => setMapLoaded(true)}
                 onError={() => setMapFailed(true)}
-                className="h-full w-full object-cover"
+                className={`h-full w-full object-cover transition-opacity duration-300 ${
+                  mapLoaded ? "opacity-100" : "opacity-0"
+                }`}
               />
+              {/* 이미지 도착 전 로딩 스피너 (지도 프록시가 2단 홉이라 첫 로딩 체감 완화) */}
+              {!mapLoaded && (
+                <div className="absolute inset-0 grid place-items-center" aria-hidden>
+                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-orange-200 border-t-orange-500" />
+                </div>
+              )}
               <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-zinc-800 shadow-sm">
                 🚶 약 {place.walkMin}분 · {direction} · {meters}m
               </div>

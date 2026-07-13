@@ -3,6 +3,10 @@
 // 키 미설정이면 501 → 클라(PlaceSheet)가 방향·거리 로케이터로 자동 폴백.
 import type { NextRequest } from "next/server";
 
+// Edge 런타임: fetch만 쓰므로 콜드스타트 최소화(첫 지도 로딩 지연 완화). 서울 리전으로 NCP 왕복 단축.
+export const runtime = "edge";
+export const preferredRegion = ["icn1"];
+
 // NCP Maps 신 플랫폼 엔드포인트. 구 naveropenapi.apigw.ntruss.com은 신규 자격증명에 401 (2026 실측).
 const ENDPOINT = "https://maps.apigw.ntruss.com/map-static/v2/raster";
 
