@@ -7,6 +7,39 @@
 
 ---
 
+## 2026-07-14 — 마케팅: 캐러셀 기획·목업·렌더 + 릴스 앱화면 녹화(로컬)
+**한 일**
+- **캐러셀(넘기는 이미지) 신규**: 릴스=도달/감정, **캐러셀=저장/이해(제품 철학 '안 하는 것' 설명)** 로 역할 분담.
+  기획·카피 7장 → `docs/MARKETING_CAROUSEL.md`(커밋). 슬라이드 골격: 훅→문제공감→리프레임("어디 갈지를 못 정하는 것")
+  →해결(위치1번·걸어서5~15분·딱3곳)→안 하는 3가지(순위X/광고X/가입X)→작동방식(거리+적합도+공정셔플)→CTA(matjib.dimad.kr).
+- **목업·렌더**: `marketing/carousel/slides.html`(브랜드 amber-50/orange-500) → Playwright(글로벌)로 **1080×1350 PNG 7장** 렌더.
+- **릴스 앱화면 녹화**: dev 서버(백그라운드) + Playwright 모바일뷰(390×844)·강남역 좌표 목업으로 **위치동의→셔플 5회→카페 전환**
+  플로우를 **실데이터로 녹화** → ffmpeg로 트리밍·1080폭 mp4(17s). 녹화 후 백그라운드 서버 정리.
+- **git 경계(재현성·무관리)**: 다른 PC에서 pull 후 수정·재생성하려고, **소스(HTML·스크립트)와 편집용 녹화 원본
+  `reel/reel-shuffle.mp4`(out/ 바깥)는 커밋**. 렌더 결과물은 전부 `out/`에 떨어지므로 **`.gitignore`는 `*/out/` 통째 제외**
+  → 앞으로 뭘 새로 렌더하든 out/로 가서 .gitignore 재관리 불필요. 재생성 방법·사전준비는 `marketing/README.md`(커밋).
+  앱 재녹화만 `.env.local`(키) 필요, 카드/캐러셀 렌더·릴스 조립은 키 불필요. (커밋 바이너리는 mp4 1개 3.4MB뿐, 재녹화 때만 갱신)
+- **주의**: `PushNotification`은 텍스트 전용 → mp4·PNG는 폰 자동전송 불가, 로컬 경로로 전달.
+
+- **A안 릴스 3개 완성**: 촬영 없이 **훅/CTA 텍스트 카드(1080×1920) + 앱 셔플 실화면**을 ffmpeg로 이어붙여 무음 mp4 3개
+  (여행/이사=밥집, 약속=카페, 각 ~10~12s). 앱 구간은 녹화본에서 세로 크롭(하단 네이버 N로고 제거). 트렌딩 오디오는 업로드 때 사용자가 얹음.
+  (`marketing/reel/cards.html`·`render-cards.mjs`·`assemble.sh`, `docs/MARKETING_REELS.md` E절)
+
+**현재 상태**
+- 산출물(로컬, gitignore):
+  - 캐러셀 `marketing/carousel/out/slide-1..7.png`
+  - 릴스 `marketing/reel/out/reel_1_travel.mp4`·`reel_2_moving.mp4`·`reel_3_appointment.mp4` (+카드 `out/card-r*.png`, raw `out/reel-shuffle.webm`)
+  - 편집 원본(커밋): `marketing/reel/reel-shuffle.mp4`
+- 재생성 스크립트(로컬): `marketing/render-carousel.mjs`, `marketing/record-reel.mjs`, `marketing/reel/render-cards.mjs`, `marketing/reel/assemble.sh`
+  (실행: `GLOBAL_MODULES="$(npm root -g)" node marketing/…`).
+- 커밋 대상: `docs/MARKETING_CAROUSEL.md`, `docs/MARKETING_REELS.md`(E절), `.gitignore`, 이 WORKLOG,
+  `marketing/README.md` + 소스(`carousel/slides.html`, `reel/cards.html`, `render-carousel.mjs`, `reel/render-cards.mjs`,
+  `record-reel.mjs`, `reel/assemble.sh`, `reel/prep-recording.sh`) + 편집 소스 `reel/out/reel-shuffle.mp4`.
+
+**다음 할 것**
+- 사용자: 캐러셀 PNG·릴스 mp4 3개 육안 확인 → 인스타 게시(릴스는 트렌딩 오디오 얹기, 캐러셀 1개는 프로필 고정핀 후보).
+- (선택) 반응 좋은 훅은 B안(실사+앱)으로 업그레이드, 셔플 롤 구간만 잘라 루프 클립화.
+
 ## 2026-07-13 (추가) — 결과 화면 재배치(셔플 한 뷰에) + 태그 접기 + 공유 복사 폴백 (D20)
 **한 일**
 - **문제(사용자)**: 셔플 눌러도 3장 롤이 한 화면에 안 담김 — 위에 헤더+모드+태그(여러 줄)+도보가 공간을 다 먹어 카드·셔플이

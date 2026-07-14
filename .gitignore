@@ -37,6 +37,13 @@ yarn-error.log*
 # vercel
 .vercel
 
+# 마케팅 에셋 — 렌더로 재생성되는 결과물은 전부 out/ 에 떨어지므로 out/ 만 통째 제외한다.
+# (앞으로 뭘 새로 렌더하든 out/ 로 가니 .gitignore를 다시 손댈 필요 없음)
+# 소스(HTML·스크립트)와 편집용 녹화 원본 marketing/reel/reel-shuffle.mp4 는 out/ 바깥이라 커밋됨
+# → 다른 PC에서 pull 후 수정·재생성 가능. 마케팅 폴더는 Next 빌드가 서비스하지 않아 배포 노출 없음.
+/marketing/carousel/out/
+/marketing/reel/out/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

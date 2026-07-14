@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>matjib carousel slides</title>
+<style>
+  :root{
+    --amber:#fffbeb; --amber2:#fef3c7; --orange:#f97316; --orange-soft:#fff1e6;
+    --ink:#18181b; --ink2:#3f3f46; --muted:#71717a; --card:#ffffff; --line:#fed7aa;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:#52525b;}
+  body{font-family:"Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif; -webkit-font-smoothing:antialiased;}
+  .sheet{display:flex; flex-direction:column; align-items:center; gap:40px; padding:40px;}
+  .slide{
+    width:1080px; height:1350px; background:var(--amber);
+    position:relative; overflow:hidden; color:var(--ink);
+    display:flex; flex-direction:column; padding:96px 88px;
+  }
+  /* 공통 브랜드 마크 / 하단 */
+  .brand{display:flex; align-items:center; gap:14px; font-weight:800; font-size:34px; letter-spacing:-.02em;}
+  .brand .dot{width:22px; height:22px; border-radius:50%; background:var(--orange);}
+  .brand .sub{color:var(--muted); font-weight:600; font-size:26px; margin-left:2px;}
+  .foot{position:absolute; left:88px; right:88px; bottom:76px; display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:30px; font-weight:700;}
+  .foot .swipe{color:var(--orange); font-weight:800;}
+  .body{flex:1; display:flex; flex-direction:column; justify-content:center; gap:34px;}
+  .kicker{color:var(--orange); font-weight:800; font-size:36px; letter-spacing:.02em;}
+  h1{font-weight:800; letter-spacing:-.03em; line-height:1.12;}
+  .h-xl{font-size:104px;}
+  .h-lg{font-size:82px;}
+  .h-md{font-size:66px;}
+  .o{color:var(--orange);}
+  .lead{font-size:40px; line-height:1.5; color:var(--ink2); font-weight:600;}
+  .muted{color:var(--muted);}
+  .strike{text-decoration:line-through; text-decoration-color:rgba(113,113,122,.5); color:var(--muted);}
+
+  /* 카드(문제 슬라이드용 별점 목업) */
+  .maprow{display:flex; flex-direction:column; gap:22px; margin-top:8px;}
+  .maprow .item{background:var(--card); border-radius:28px; padding:34px 40px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 10px 30px rgba(0,0,0,.05);}
+  .maprow .nm{font-size:40px; font-weight:800;}
+  .maprow .st{font-size:34px; color:#eab308; font-weight:800; letter-spacing:2px;}
+  .maprow .rv{font-size:28px; color:var(--muted); font-weight:600; margin-top:6px;}
+
+  /* 결과 3카드 목업(해결 슬라이드) */
+  .phone{background:var(--card); border-radius:44px; padding:40px; box-shadow:0 24px 60px rgba(249,115,22,.16); border:2px solid var(--line);}
+  .deck{display:flex; flex-direction:column; gap:24px;}
+  .rcard{border:2px solid var(--line); border-radius:28px; padding:34px 38px; display:flex; justify-content:space-between; align-items:center; background:#fffdf8;}
+  .rcard .nm{font-size:44px; font-weight:800;}
+  .rcard .cat{font-size:30px; color:var(--muted); font-weight:600; margin-top:8px;}
+  .walk{background:var(--orange-soft); color:var(--orange); font-weight:800; font-size:34px; padding:16px 26px; border-radius:20px; white-space:nowrap;}
+
+  /* 안 하는 것 리스트 */
+  .nolist{display:flex; flex-direction:column; gap:30px; margin-top:16px;}
+  .no{display:flex; align-items:center; gap:34px; background:var(--card); border-radius:28px; padding:40px 44px; box-shadow:0 10px 30px rgba(0,0,0,.05);}
+  .no .x{width:76px; height:76px; border-radius:50%; background:var(--orange-soft); color:var(--orange); font-size:46px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .no .t{font-size:46px; font-weight:800;}
+  .no .t small{display:block; font-size:30px; color:var(--muted); font-weight:600; margin-top:8px;}
+
+  /* 작동 방식 chips */
+  .chips{display:flex; flex-direction:column; gap:26px; margin-top:10px;}
+  .chip{display:flex; align-items:center; gap:30px; font-size:50px; font-weight:800;}
+  .chip .b{width:88px; height:88px; border-radius:24px; background:var(--orange); color:#fff; font-size:44px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .plus{font-size:44px; color:var(--muted); font-weight:800; padding-left:26px;}
+  .note{margin-top:38px; font-size:38px; color:var(--muted); font-weight:700;}
+  .note b{color:var(--ink);}
+
+  /* CTA */
+  .cta-wrap{display:flex; flex-direction:column; align-items:flex-start; gap:40px;}
+  .urlpill{display:inline-flex; align-items:center; gap:20px; background:var(--orange); color:#fff; font-size:52px; font-weight:800; padding:34px 54px; border-radius:999px; box-shadow:0 16px 40px rgba(249,115,22,.35);}
+  .save{display:flex; gap:24px; flex-wrap:wrap;}
+  .save span{background:#fff; border:2px solid var(--line); border-radius:999px; padding:24px 40px; font-size:38px; font-weight:800;}
+  .fingers{font-size:150px; line-height:1;}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- 1 · 커버/훅 -->
+  <div class="slide" id="s1">
+    <div class="brand"><span class="dot"></span>matjib<span class="sub">낯선 동네 갈 데 정해주는 앱</span></div>
+    <div class="body">
+      <h1 class="h-xl">낯선 동네에서<br><span class="o">"뭐 먹지"</span><br>검색하다 지친 사람</h1>
+      <p class="lead">여행 · 출장 · 이사 · 약속…<br>처음 온 동네에서 갈 데 못 정하는 나에게</p>
+    </div>
+    <div class="foot"><span>1 / 7</span><span class="swipe">넘겨보기 👉</span></div>
+  </div>
+
+  <!-- 2 · 문제 공감 -->
+  <div class="slide" id="s2">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div class="kicker">이런 적 있죠?</div>
+      <h1 class="h-lg">지도앱 켜고<br>별점 20개 비교하다</h1>
+      <div class="maprow">
+        <div class="item"><div><div class="nm">○○식당</div><div class="rv">리뷰 1,204 · 사진 340장</div></div><div class="st">★ 4.3</div></div>
+        <div class="item"><div><div class="nm">△△네</div><div class="rv">리뷰 88 · "웨이팅 김"</div></div><div class="st">★ 4.5</div></div>
+        <div class="item"><div><div class="nm">□□집</div><div class="rv">리뷰 612 · 광고 같음?</div></div><div class="st">★ 3.9</div></div>
+      </div>
+      <p class="lead" style="margin-top:12px">…결국 아는 프랜차이즈로 감 😮‍💨</p>
+    </div>
+    <div class="foot"><span>2 / 7</span><span class="swipe">넘겨보기 👉</span></div>
+  </div>
+
+  <!-- 3 · 리프레임(핵심) -->
+  <div class="slide" id="s3">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div style="font-size:200px; color:var(--line); line-height:.6; font-weight:900;">&ldquo;</div>
+      <h1 class="h-md muted">문제는 "맛집이 뭔지"가 아니라</h1>
+      <h1 class="h-lg o">"어디 갈지"를<br>못 정하는 것.</h1>
+      <p class="lead">그래서 이 앱은 <b>맛을 평가하지 않습니다.</b><br>갈 데를 대신 정해줄 뿐.</p>
+    </div>
+    <div class="foot"><span>3 / 7</span><span class="swipe">넘겨보기 👉</span></div>
+  </div>
+
+  <!-- 4 · 해결(앱 실물 자리) -->
+  <div class="slide" id="s4">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div class="kicker">해결은 5초</div>
+      <h1 class="h-md">위치 동의 <span class="o">한 번</span> →<br>걸어서 5~15분 → <span class="o">딱 3곳</span></h1>
+      <div class="phone">
+        <div class="deck">
+          <div class="rcard"><div><div class="nm">우리집김치찌개</div><div class="cat">한식 · 백반</div></div><div class="walk">🚶 3분</div></div>
+          <div class="rcard"><div><div class="nm">강남손칼국수</div><div class="cat">칼국수</div></div><div class="walk">🚶 5분</div></div>
+          <div class="rcard"><div><div class="nm">종로국밥</div><div class="cat">국밥</div></div><div class="walk">🚶 4분</div></div>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:6px">검색 · 비교 · 스크롤 <b>0.</b> 앱이 대신 정해줌.</p>
+    </div>
+    <div class="foot"><span>4 / 7</span><span class="swipe">넘겨보기 👉</span></div>
+  </div>
+
+  <!-- 5 · 차별점(안 하는 것) -->
+  <div class="slide" id="s5">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <h1 class="h-lg">이 앱이 <span class="o">안 하는</span><br>3가지</h1>
+      <div class="nolist">
+        <div class="no"><div class="x">✕</div><div class="t">맛집 순위 안 매김<small>데이터에 품질 신호가 없음 — 별점 줄세우기 안 함</small></div></div>
+        <div class="no"><div class="x">✕</div><div class="t">광고 · 협찬 없음<small>상위노출 · 스폰서 카드 개념 자체가 없음</small></div></div>
+        <div class="no"><div class="x">✕</div><div class="t">가입 · 앱설치 없음<small>위치 동의 한 번이면 끝. 로그인 0</small></div></div>
+      </div>
+    </div>
+    <div class="foot"><span>5 / 7</span><span class="swipe">넘겨보기 👉</span></div>
+  </div>
+
+  <!-- 6 · 작동 방식 -->
+  <div class="slide" id="s6">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div class="kicker">그럼 3곳은 어떻게 고름?</div>
+      <h1 class="h-md">순위가 아니라,<br>이 세 가지로만.</h1>
+      <div class="chips">
+        <div class="chip"><span class="b">📍</span>거리 (걸어서 몇 분)</div>
+        <div class="plus">＋</div>
+        <div class="chip"><span class="b">🍽️</span>업종 적합도 (모드·상황)</div>
+        <div class="plus">＋</div>
+        <div class="chip"><span class="b">🎲</span>공정 셔플 (랜덤)</div>
+      </div>
+      <p class="note"><b>맛 판단 · 품질 평가는 어디에도 없음.</b> 그래서 공정함.</p>
+    </div>
+    <div class="foot"><span>6 / 7</span><span class="swipe">넘겨보기 👉</span></div>
+  </div>
+
+  <!-- 7 · CTA -->
+  <div class="slide" id="s7">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body cta-wrap">
+      <div class="fingers">🚶📍</div>
+      <h1 class="h-lg">다음에 낯선 동네<br>가면, <span class="o">켜봐.</span></h1>
+      <p class="lead">위치 한 번이면 걸어갈 3곳 끝.<br>검색 안 함, 가입 안 함, 광고 없음.</p>
+      <div class="urlpill">matjib.dimad.kr</div>
+      <div class="save"><span>📌 저장해두기</span><span>💬 친구한테 보내기</span></div>
+    </div>
+    <div class="foot"><span>7 / 7</span><span></span></div>
+  </div>
+
+</div>
+</body>
+</html>

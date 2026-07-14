@@ -50,6 +50,18 @@
 |---|---|---|---|
 | `index.ts` | ✅ | 공유 타입 | `Restaurant`, `RestaurantSource`, `SituationTag`, `RecommendRequest`, `RecommendResponse`, `WalkBand` |
 
+## 마케팅 (`marketing/`) — 앱 런타임 아님, 릴스·캐러셀 생성 파이프라인
+| 경로 | 상태 | 책임 |
+|---|---|---|
+| `marketing/README.md` | ✅ | 파이프라인 사용법·사전준비·파일표 (**여기가 상세 색인**) |
+| `marketing/carousel/slides.html` + `render-carousel.mjs` | ✅ | 캐러셀 7장 목업 → 1080×1350 PNG(Playwright) |
+| `marketing/reel/cards.html` + `render-cards.mjs` | ✅ | 릴스 훅/CTA 카드 → 1080×1920 PNG |
+| `marketing/record-reel.mjs` | ✅ | 앱 셔플 화면 녹화(모바일뷰·강남역 실데이터) → webm |
+| `marketing/reel/prep-recording.sh` | ✅ | webm → 편집 원본 `reel/reel-shuffle.mp4`(커밋) |
+| `marketing/reel/assemble.sh` | ✅ | 카드+앱화면 → 무음 릴스 mp4 3개 |
+| `*/out/**` | — | 렌더 결과물(PNG·최종 mp4·webm) — `.gitignore`(out/ 통째) |
+> 기획·카피는 `docs/MARKETING_REELS.md`(릴스)·`docs/MARKETING_CAROUSEL.md`(캐러셀).
+
 ## 설정 파일
 | 파일 | 용도 |
 |---|---|

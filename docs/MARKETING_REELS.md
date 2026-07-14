@@ -89,6 +89,14 @@
 - **실사 컷**: ①캐리어·숙소·골목 두리번/걸어가는 뒷모습 ②정면 셀피 토크/집 앞 골목 ③낯선 역·시계 확인/카페 착석
 - **편집 공통**: 셔플 구간 BGM 비트 드랍 정렬 · 마지막 "다시 셔플"→첫 훅 루프 · 자막에 지역·상황 키워드 · CTA는 저장📌/보내기💬만 · 트렌딩 오디오 3종 A/B 저장
 
+## E. A안 완성본 — "앱화면 + 자막" 무음 릴스 3개 (촬영 없이, 2026-07-14)
+실사 촬영 없이 **훅/CTA 텍스트 카드 + 앱 셔플 화면**만으로 즉시 게시 가능한 버전. 트렌딩 오디오는 **인스타 업로드 때 사용자가** 얹는다.
+- 구조(각 ~10~12s): 훅 카드(2.6s) → 앱 셔플→3곳 실화면(4~6.5s) → CTA 카드(3s). 1080×1920 무음.
+- 산출물(로컬, gitignore): `marketing/reel/out/reel_1_travel.mp4`(여행·밥집) · `reel_2_moving.mp4`(이사·밥집) · `reel_3_appointment.mp4`(약속·카페).
+- 소스: 앱 녹화 `reel-shuffle.webm/.mp4`(강남역 실데이터, Playwright), 카드 `cards.html`→`card-r*.png`.
+- 재생성: `GLOBAL_MODULES="$(npm root -g)" node marketing/reel/render-cards.mjs` → `bash marketing/reel/assemble.sh`.
+- 트레이드오프: 실사 얼굴/상황이 없어 감정 훅은 약함 → **훅 A/B 테스트용**. 반응 좋은 훅은 B안(실사+앱)으로 업그레이드.
+
 ## 참고(알고리즘 근거)
 - 2026 릴스 알고리즘: https://1point.kr/blog/insights/2026-reels-algorithm-guide/ · 첫3초·유지율: https://snsboost.kr/blog/6
 - 저장·공유·첫1시간: https://www.threads.com/@blux.ai/post/DYlhTfnk_Ty/ · 음식 44.1%: https://openads.co.kr/content/contentDetail?contsId=10264

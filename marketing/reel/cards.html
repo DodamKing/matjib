@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>reel cards 1080x1920</title>
+<style>
+  :root{--amber:#fffbeb; --orange:#f97316; --ink:#18181b; --ink2:#3f3f46; --muted:#71717a; --line:#fed7aa; --soft:#fff1e6;}
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif; -webkit-font-smoothing:antialiased; background:#52525b;}
+  .sheet{display:flex; flex-direction:column; align-items:center; gap:40px; padding:40px;}
+  .rslide{width:1080px; height:1920px; background:var(--amber); position:relative; overflow:hidden; color:var(--ink);
+    display:flex; flex-direction:column; padding:130px 96px;}
+  .brand{display:flex; align-items:center; gap:16px; font-weight:800; font-size:40px; letter-spacing:-.02em;}
+  .brand .dot{width:26px; height:26px; border-radius:50%; background:var(--orange);}
+  .body{flex:1; display:flex; flex-direction:column; justify-content:center; gap:44px;}
+  .kicker{color:var(--orange); font-weight:800; font-size:48px; letter-spacing:.01em;}
+  h1{font-weight:800; letter-spacing:-.03em; line-height:1.14;}
+  .xl{font-size:124px;} .lg{font-size:100px;} .md{font-size:78px;}
+  .o{color:var(--orange);}
+  .lead{font-size:52px; line-height:1.45; color:var(--ink2); font-weight:600;}
+  .cue{position:absolute; left:0; right:0; bottom:120px; text-align:center; color:var(--orange); font-weight:800; font-size:52px;}
+  /* CTA */
+  .urlpill{display:inline-flex; align-items:center; gap:20px; background:var(--orange); color:#fff; font-size:62px; font-weight:800; padding:40px 66px; border-radius:999px; box-shadow:0 20px 50px rgba(249,115,22,.35); align-self:flex-start;}
+  .save{display:inline-flex; align-self:flex-start; background:#fff; border:3px solid var(--line); border-radius:999px; padding:30px 50px; font-size:46px; font-weight:800;}
+  .fingers{font-size:180px; line-height:1;}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- R1 여행 · HOOK -->
+  <div class="rslide" id="r1h">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div class="kicker">여행 첫날, 숙소 앞</div>
+      <h1 class="lg">여기 뭐가 맛집인지<br><span class="o">1도 모를 때</span></h1>
+      <p class="lead">검색은 귀찮고 다 광고 같고…</p>
+    </div>
+    <div class="cue">👇 위치 한 번이면 끝</div>
+  </div>
+
+  <!-- R1 여행 · CTA -->
+  <div class="rslide" id="r1c">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div class="fingers">🚶</div>
+      <h1 class="lg">고민 끝.<br><span class="o">그냥 걸어감.</span></h1>
+      <p class="lead">위치 한 번 → 걸어서 10분, 딱 3곳.<br>가입·광고 없음, 순위 안 매김.</p>
+      <div class="urlpill">matjib.dimad.kr</div>
+      <div class="save">📌 다음 여행 때 쓰게 저장</div>
+    </div>
+  </div>
+
+  <!-- R2 이사 · HOOK -->
+  <div class="rslide" id="r2h">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div class="kicker">이사 온 지 3개월째</div>
+      <h1 class="lg">아직도 동네에<br><span class="o">갈 밥집이 없는 사람</span> 🙋</h1>
+      <p class="lead">결국 맨날 배달·편의점…</p>
+    </div>
+    <div class="cue">👇 걸어서 5분에 다 있음</div>
+  </div>
+
+  <!-- R2 이사 · CTA -->
+  <div class="rslide" id="r2c">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div class="fingers">🍚</div>
+      <h1 class="md">리스트 100개 말고,<br><span class="o">딱 3곳.</span></h1>
+      <p class="lead">매일 하나씩 셔플로 동네 뚫는 재미.<br>위치 한 번, 가입·광고 없음.</p>
+      <div class="urlpill">matjib.dimad.kr</div>
+      <div class="save">📌 우리 동네도 되나 저장</div>
+    </div>
+  </div>
+
+  <!-- R3 약속 · HOOK -->
+  <div class="rslide" id="r3h">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div class="kicker">약속 장소 30분 일찍 도착</div>
+      <h1 class="lg">낯선 동네,<br><span class="o">이 시간에 뭐하지?</span></h1>
+      <p class="lead">어디 들어가야 할지 모르겠고…</p>
+    </div>
+    <div class="cue">👇 카페 모드로 딱 3곳</div>
+  </div>
+
+  <!-- R3 약속 · CTA -->
+  <div class="rslide" id="r3c">
+    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="body">
+      <div class="fingers">☕</div>
+      <h1 class="md">고민 0초,<br><span class="o">걸어서 5분 3곳.</span></h1>
+      <p class="lead">약속 전엔 카페, 끝나면 술집 모드로 2차.<br>위치 한 번이면 앱이 정해줌.</p>
+      <div class="urlpill">matjib.dimad.kr</div>
+      <div class="save">📌 약속 잦으면 저장 필수</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
