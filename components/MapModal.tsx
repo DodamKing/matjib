@@ -120,7 +120,7 @@ export function MapModal({ place, userCoords, onClose }: Props) {
   }, [place, userCoords, onClose]);
 
   return (
-    <div className="animate-fade-in fixed inset-0 z-[60] flex flex-col bg-white">
+    <div className="animate-fade-in fixed inset-0 z-60 flex flex-col bg-white">
       {/* 상단 바: 상호 + 닫기 */}
       <div className="flex items-center justify-between gap-3 border-b border-zinc-100 px-4 py-3">
         <div className="min-w-0">
