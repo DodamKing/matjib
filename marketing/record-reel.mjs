@@ -8,7 +8,22 @@ import { mkdirSync, readdirSync, renameSync } from "node:fs";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const { chromium } = require(join(process.env.GLOBAL_MODULES, "playwright"));
+// 전역 playwright는 이 저장소 밖(사용자 머신)에 있어 언제든 사라질 수 있다.
+// 실제로 한 번 사라져서 MODULE_NOT_FOUND 스택만 보고 원인을 추적해야 했으므로, 설치법을 직접 알려준다.
+const { chromium } = loadPlaywright();
+function loadPlaywright() {
+  try {
+    return require(join(process.env.GLOBAL_MODULES ?? "", "playwright"));
+  } catch {
+    console.error(
+      "\n[릴스 녹화] playwright를 찾지 못했습니다.\n" +
+        "  1) 설치:  npm i -g playwright\n" +
+        '  2) 실행:  GLOBAL_MODULES="$(npm root -g)" node marketing/record-reel.mjs\n' +
+        `  (현재 GLOBAL_MODULES=${process.env.GLOBAL_MODULES ?? "미설정"})\n`,
+    );
+    process.exit(1);
+  }
+}
 
 const here = dirname(fileURLToPath(import.meta.url));
 const outDir = join(here, "reel", "out");
