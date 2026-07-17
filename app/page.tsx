@@ -8,6 +8,7 @@ import { pickThree } from "@/lib/shuffle";
 import { MODE_LIST, MODES, type ModeId } from "@/lib/modes";
 import { WALK_BANDS, DEFAULT_BAND } from "@/lib/walkBands";
 import { encodeRx, cardsToRx } from "@/lib/shareLink";
+import { BrandMark } from "@/components/BrandMark";
 import { LocationGate } from "@/components/LocationGate";
 import { CardDeck } from "@/components/CardDeck";
 import { SituationInput } from "@/components/SituationInput";
@@ -124,8 +125,11 @@ export default function Home() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-amber-50 px-5 py-6 text-zinc-900">
-      {/* 큰 2줄 헤더는 항상 상단(브랜드). 결과 화면에서도 유지 — 데크가 바로 아래 와서 셔플이 한 화면에 담김 (D20/B) */}
+      {/* 헤더: 브랜드명(딱세곳) → 제품 약속(2줄 태그라인). 결과 화면에서도 유지 —
+          데크가 바로 아래 와서 셔플이 한 화면에 담김 (D20/B). 브랜드 마크는 검색·릴스로 온
+          사람이 이름을 각인하는 유일한 자리 (D24). */}
       <header className="mb-6 mt-2 text-center">
+        <BrandMark className="mb-3" />
         <h1 className="text-2xl font-extrabold leading-snug tracking-tight">
           맛집 안 찾아줍니다.
           <br />

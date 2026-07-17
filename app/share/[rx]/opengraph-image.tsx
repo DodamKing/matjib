@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 import { decodeRx } from "@/lib/shareLink";
 import { loadKoreanFont } from "@/lib/ogFont";
 
-export const alt = "matjib 점심 처방전";
+export const alt = "딱세곳 — 누가 보낸 3곳";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -45,7 +45,7 @@ export default async function Image({ params }: Params) {
             📍 걸어서 갈 만한 근처 3곳
           </div>
           <div style={{ display: "flex", fontSize: 26, lineHeight: 1.3, color: "#a1a1aa" }}>
-            matjib · 걸어서 5~15분{scope ? ` · ${scope}` : ""}
+            딱세곳 · 걸어서 5~15분{scope ? ` · ${scope}` : ""}
           </div>
         </div>
 
@@ -111,7 +111,7 @@ export default async function Image({ params }: Params) {
             fontWeight: 700,
           }}
         >
-          나도 받기 → matjib.dimad.kr
+          나도 받기 → 딱세곳 · matjib.dimad.kr
         </div>
       </div>
     ),

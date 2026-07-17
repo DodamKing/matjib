@@ -91,10 +91,12 @@
 
 ## E. A안 완성본 — "앱화면 + 자막" 무음 릴스 3개 (촬영 없이, 2026-07-14)
 실사 촬영 없이 **훅/CTA 텍스트 카드 + 앱 셔플 화면**만으로 즉시 게시 가능한 버전. 트렌딩 오디오는 **인스타 업로드 때 사용자가** 얹는다.
-- 구조(각 ~10~12s): 훅 카드(2.6s) → 앱 셔플→3곳 실화면(4~6.5s) → CTA 카드(3s). 1080×1920 무음.
+- 구조(각 ~11~12s): 훅 카드(2.6s) → 앱 셔플→3곳 실화면(5.5~6.5s) → CTA 카드(3s). 1080×1920 무음.
 - 산출물(로컬, gitignore): `marketing/reel/out/reel_1_travel.mp4`(여행·밥집) · `reel_2_moving.mp4`(이사·밥집) · `reel_3_appointment.mp4`(약속·카페).
 - 소스: 앱 녹화 `reel-shuffle.webm/.mp4`(강남역 실데이터, Playwright), 카드 `cards.html`→`card-r*.png`.
 - 재생성: `GLOBAL_MODULES="$(npm root -g)" node marketing/reel/render-cards.mjs` → `bash marketing/reel/assemble.sh`.
+- **앱 화면은 9:16으로 직접 녹화**(576×1024, 프로덕션 빌드) — 크롭 없음. 셔플 정지 구간 2.4s로 3곳을 읽을
+  시간을 준다(예전엔 0.9s라 못 읽었다). 근거·기각안은 `DECISIONS.md` D23, 검수 절차는 `marketing/README.md`.
 - 트레이드오프: 실사 얼굴/상황이 없어 감정 훅은 약함 → **훅 A/B 테스트용**. 반응 좋은 훅은 B안(실사+앱)으로 업그레이드.
 
 ## 참고(알고리즘 근거)

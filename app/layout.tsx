@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const TITLE = "맛집 안 찾아줍니다, 갈 데를 정해줍니다 | matjib";
+const TITLE = "딱세곳 — 맛집 안 찾아줍니다, 갈 데를 정해줍니다";
 const DESCRIPTION =
-  "처음 온 동네에서 뭐 먹을지 검색하기 귀찮을 때. 별점·순위 없이 지금 내 위치 기준 걸어서 5~15분 식당을 딱 3곳만. 위치 동의 한 번, 가입·광고 없음.";
+  "딱세곳: 처음 온 동네에서 뭐 먹을지 검색하기 귀찮을 때. 별점·순위 없이 지금 내 위치 기준 걸어서 5~15분 식당을 딱 3곳만. 위치 동의 한 번, 가입·광고 없음.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     url: "/",
-    siteName: "matjib",
+    siteName: "딱세곳",
     title: TITLE,
     description: DESCRIPTION,
     // og:image는 app/opengraph-image.tsx가 metadataBase로 절대경로 자동 부착.

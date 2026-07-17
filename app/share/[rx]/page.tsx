@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const payload = decodeRx(rx);
   if (!payload) {
     return {
-      title: "3곳을 찾을 수 없어요 | matjib",
+      title: "3곳을 찾을 수 없어요 | 딱세곳",
       robots: { index: false, follow: false },
     };
   }
@@ -103,7 +103,7 @@ export default async function SharePage({ params }: Params) {
         📍 나도 내 주변 3곳 받기 →
       </Link>
       <p className="mt-3 text-center text-[11px] text-zinc-400">
-        matjib · 걸어서 5~15분 · 광고·협찬 없음
+        딱세곳 · 걸어서 5~15분 · 광고·협찬 없음
       </p>
     </main>
   );

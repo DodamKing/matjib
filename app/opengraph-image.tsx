@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
+import { loadKoreanFont } from "@/lib/ogFont";
 
-export const alt = "matjib — 오늘 뭐 먹지 클리닉";
+export const alt = "딱세곳 — 낯선 동네에서 갈 데를 정해주는 앱";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -10,7 +11,10 @@ const CARD = {
   borderRadius: 28,
 };
 
-export default function Image() {
+export default async function Image() {
+  // satori 기본 폰트엔 한글 글리프가 없어 배포(리눅스)에서 "딱세곳"이 두부(□)로 깨진다.
+  // 로컬(Windows)은 시스템 폰트로 우연히 렌더되지만 Vercel엔 한글 폰트가 없다 → 명시적으로 실는다.
+  const font = await loadKoreanFont();
   return new ImageResponse(
     (
       <div
@@ -22,6 +26,7 @@ export default function Image() {
           alignItems: "center",
           justifyContent: "center",
           background: "#FFFBEB",
+          fontFamily: "KR",
         }}
       >
         <div
@@ -66,12 +71,13 @@ export default function Image() {
         <div
           style={{
             display: "flex",
-            fontSize: 64,
+            fontSize: 84,
             fontWeight: 800,
             color: "#18181b",
+            letterSpacing: -2,
           }}
         >
-          🩺 오늘 뭐 먹지 클리닉
+          딱세곳
         </div>
         <div
           style={{
@@ -81,10 +87,13 @@ export default function Image() {
             marginTop: 20,
           }}
         >
-          고민 그만하세요. 가까운 3곳만 딱 처방해 드립니다.
+          낯선 동네에서 갈 데를 정해드립니다. 걸어서 5~15분, 딱 3곳.
         </div>
       </div>
     ),
-    { ...size },
+    {
+      ...size,
+      fonts: font ? [{ name: "KR", data: font, weight: 700, style: "normal" }] : undefined,
+    },
   );
 }

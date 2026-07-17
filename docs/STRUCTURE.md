@@ -29,6 +29,7 @@
 | `PlaceSheet.tsx` | ✅ | 장소 상세 바텀시트 — 길찾기를 앱 내부에서 감쌈. 지도 미리보기(NCP 실지도 우선, 실패 시 방향·거리 로케이터 폴백)+출발/도착 범례+지도탭→인터랙티브(D12)+주소복사+내비앱 선택 (D11) | `PlaceSheet` |
 | `MapModal.tsx` | ✅ | 전체화면 인터랙티브 지도 — NAVER Web Dynamic Map(핀줌·이동), 시트 썸네일 탭 시 열림. 클라 JS 키(도메인제한), authFailure/키없음 시 안내 (D12) | `MapModal` |
 | `SituationInput.tsx` | ✅ | 상황 태그 다중 선택 칩 UI — 태그 세트는 부모가 모드별로 주입 (D5/D10) | `SituationInput` |
+| `BrandMark.tsx` | ✅ | 브랜드 마크 — 카드 3장 심볼(icon.svg 승격)+"딱세곳" 워드마크. 헤더 최상단, 검색·릴스 유입자 각인용 (D24) | `BrandMark` |
 
 ## 라이브러리 (`lib/`)
 | 파일 | 상태 | 책임 | 주요 export |
@@ -59,9 +60,10 @@
 | `marketing/README.md` | ✅ | 파이프라인 사용법·사전준비·파일표 (**여기가 상세 색인**) |
 | `marketing/carousel/slides.html` + `render-carousel.mjs` | ✅ | 캐러셀 7장 목업 → 1080×1350 PNG(Playwright) |
 | `marketing/reel/cards.html` + `render-cards.mjs` | ✅ | 릴스 훅/CTA 카드 → 1080×1920 PNG |
-| `marketing/record-reel.mjs` | ✅ | 앱 셔플 화면 녹화(모바일뷰·강남역 실데이터) → webm |
-| `marketing/reel/prep-recording.sh` | ✅ | webm → 편집 원본 `reel/reel-shuffle.mp4`(커밋) |
-| `marketing/reel/assemble.sh` | ✅ | 카드+앱화면 → 무음 릴스 mp4 3개 |
+| `marketing/record-reel.mjs` | ✅ | 앱 셔플 화면 녹화 → webm. **9:16(576×1024)·프로덕션 빌드 필수**(D23) |
+| `marketing/reel/prep-recording.sh` | ✅ | webm → 편집 원본 `reel/reel-shuffle.mp4`(커밋), 1080×1920 정규화 |
+| `marketing/reel/assemble.sh` | ✅ | 카드+앱화면 → 무음 릴스 mp4 3개 (**크롭 없음** — 녹화가 이미 9:16) |
+| `marketing/serve-assets.mjs` | ✅ | **폰 전송용 임시 서버** — 터미널 QR → 저장(다운로드)·캡션 복사. Android 대상 |
 | `*/out/**` | — | 렌더 결과물(PNG·최종 mp4·webm) — `.gitignore`(out/ 통째) |
 > 기획·카피는 `docs/MARKETING_REELS.md`(릴스)·`docs/MARKETING_CAROUSEL.md`(캐러셀).
 
