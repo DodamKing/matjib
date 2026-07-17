@@ -9,7 +9,9 @@
 ## 앱 / 라우트
 | 경로 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
-| `app/layout.tsx` | ✅ | 루트 레이아웃 + 메타데이터. `metadataBase`/canonical/OG/twitter를 `SITE_URL`→`VERCEL_PROJECT_PRODUCTION_URL`→localhost 순으로 해석(프로토콜 자동 보강). 폰트/전역 스타일 | `default`, `metadata` |
+| `app/layout.tsx` | ✅ | 루트 레이아웃 + 메타데이터. `metadataBase`/canonical/OG/twitter(사이트 URL은 `lib/site.ts`) + 네이버·구글 사이트 소유확인 메타. 폰트/전역 스타일 | `default`, `metadata` |
+| `app/robots.ts` | ✅ | robots.txt 생성 — 전체 Allow, `/api/`·`/share/` 제외, 사이트맵 위치 명시 | `default` |
+| `app/sitemap.ts` | ✅ | sitemap.xml 생성 — 랜딩 `/` 한 건(결과는 URL 없는 클라 상태) | `default` |
 | `app/page.tsx` | ✅ | 메인. 큰 헤더 상단 → **카드덱+셔플+공유(화면 위, 한 뷰에)** → 조정(모드/도보/상황태그) 데크 아래로 (D20/B). 위치 전엔 헤더+게이트. `/api/recommend` fetch, `openPlace`→`PlaceSheet`(D11). 공유 복사 폴백(D20) | `default` |
 | `app/share/[rx]/page.tsx` | ✅ | 공유 처방전 뷰(서버) — URL의 3곳 재현(읽기전용)+길찾기+"나도 받기" CTA. OG 제목/설명에 상호명, `noindex` (D17) | `default`, `generateMetadata` |
 | `app/share/[rx]/opengraph-image.tsx` | ✅ | 공유 링크 OG 이미지 — 3곳 카드 1200×630(한글 폰트 `ogFont`) = 카톡/SNS 미리보기 훅 (D17) | `default` |
@@ -38,6 +40,7 @@
 | `tags.ts` | ✅ | 모드별 상황 태그 세트 + 키워드 매핑 (D5/D10) | `MEAL_TAGS`, `CAFE_TAGS`, `BAR_TAGS` |
 | `match.ts` | ✅ | 태그 키워드 → 업종 필터링(모드 태그셋 인자로 받음), LLM 미사용 (D5) | `filterByTags()` |
 | `distance.ts` | ✅ | 도보분↔미터 변환, 거리 계산 + 방위(미니 로케이터용, D11) | `haversine()`, `walkMinutes()`, `bearingDeg()`, `compass8()` |
+| `site.ts` | ✅ | 사이트 절대 URL 해석 — `SITE_URL`→`VERCEL_PROJECT_PRODUCTION_URL`→localhost, 프로토콜 자동 보강. layout·robots·sitemap 공용 | `resolveSiteUrl()`, `siteUrl` |
 | `walkBands.ts` | ✅ | 도보 밴드(구간) 단일 원천 — 5/10/15분 겹치지 않는 구간 정의·필터 (D14) | `WALK_BANDS`, `DEFAULT_BAND`, `resolveBand()`, `inBand()`, `WalkBandDef` |
 | `useHistoryDismiss.ts` | ✅ | 오버레이(시트/지도) 브라우저 히스토리 연동 — 폰 뒤로가기=오버레이만 닫기, 중첩·StrictMode 안전 (D16) | `useHistoryDismiss()` |
 | `shareLink.ts` | ✅ | 처방전 공유 링크 — 3곳을 URL(base64url)에 인코딩/디코딩, 저장소 없음 (D17) | `encodeRx()`, `decodeRx()`, `cardsToRx()`, `rxToRestaurants()` |

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,22 +13,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// 사이트 절대 URL(canonical·og:url·og:image 변환용) 우선순위:
-//  1) SITE_URL — 커스텀 도메인 명시(예: https://matjib.dimad.kr).
-//  2) VERCEL_PROJECT_PRODUCTION_URL — Vercel 자동 주입(커스텀 도메인 미설정 시 vercel.app 폴백).
-//  3) localhost — 로컬 개발.
-// 서버 사이드 메타데이터라 NEXT_PUBLIC_ 불필요(키 보안 규칙 D12 무관).
-function resolveSiteUrl(): string {
-  const raw =
-    process.env.SITE_URL ||
-    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-    "http://localhost:3000";
-  // 프로토콜 없이 넣어도(SITE_URL=matjib.dimad.kr) new URL()이 안 깨지게 https:// 보강 + 끝 슬래시 제거.
-  const withProtocol = /^https?:\/\//.test(raw) ? raw : `https://${raw}`;
-  return withProtocol.replace(/\/+$/, "");
-}
-
-const siteUrl = resolveSiteUrl();
 const TITLE = "맛집 안 찾아줍니다, 갈 데를 정해줍니다 | matjib";
 const DESCRIPTION =
   "처음 온 동네에서 뭐 먹을지 검색하기 귀찮을 때. 별점·순위 없이 지금 내 위치 기준 걸어서 5~15분 식당을 딱 3곳만. 위치 동의 한 번, 가입·광고 없음.";
@@ -51,6 +36,14 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+  },
+  // 검색엔진 사이트 소유확인(네이버 서치어드바이저 / 구글 서치콘솔).
+  // 색인 등록 후에도 태그를 지우면 소유확인이 풀리므로 계속 유지할 것.
+  verification: {
+    google: "PlYdRNSi1zGbnQC-1UtvTw81FjJ-zoEHv4n_V4dW360",
+    other: {
+      "naver-site-verification": "0985268297cbaec8c3890ec82f76b6d4fb672c02",
+    },
   },
 };
 

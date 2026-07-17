@@ -7,6 +7,26 @@
 
 ---
 
+## 2026-07-17 — 검색 색인 준비: 네이버·구글 소유확인 + robots/sitemap
+**한 일**
+- **소유확인 메타 2종**: `app/layout.tsx` metadata `verification`에 네이버(`other["naver-site-verification"]`)와
+  **구글 서치콘솔**(`verification.google`) 추가 → `<meta name="naver-site-verification" ...>` / `<meta name="google-site-verification" ...>` 렌더.
+  소유확인 통과 후에도 태그는 **유지**해야 함(지우면 해제됨).
+- **`app/robots.ts` 신규**: 전체 Allow, `/api/`·`/share/` Disallow(공유 URL은 개인 처방전 일회성 링크 — 색인 대상 아님,
+  OG 미리보기는 크롤 없이 동작), `Sitemap: {siteUrl}/sitemap.xml` 명시.
+- **`app/sitemap.ts` 신규**: 랜딩 `/` 한 건(결과 화면은 위치 기반 클라 상태라 URL 없음).
+- **`lib/site.ts` 신규**: `resolveSiteUrl()`/`siteUrl`을 layout에서 분리 — robots·sitemap·layout 3곳이 공유(중복 제거).
+
+**현재 상태**
+- 로컬 dev(`SITE_URL=https://matjib.dimad.kr`)에서 전부 실측 확인: robots.txt·sitemap.xml 정상 출력, 홈 HTML에 네이버·구글 메타 2종 존재. `tsc --noEmit` 통과.
+
+**다음 할 것 (사용자 액션)**
+1. 배포(push→Vercel) 후 **네이버 서치어드바이저 / 구글 서치콘솔 양쪽에서 "소유확인"** 클릭 → 사이트 등록.
+2. 양쪽에 **사이트맵 제출**: `https://matjib.dimad.kr/sitemap.xml` (네이버는 요청 메뉴에서 robots.txt 검증도 함께).
+3. Vercel 환경변수 `SITE_URL=https://matjib.dimad.kr` 세팅 여부 재확인(미설정 시 robots/sitemap이 vercel.app 도메인으로 나감).
+
+---
+
 ## 2026-07-14 — 마케팅: 캐러셀 기획·목업·렌더 + 릴스 앱화면 녹화(로컬)
 **한 일**
 - **캐러셀(넘기는 이미지) 신규**: 릴스=도달/감정, **캐러셀=저장/이해(제품 철학 '안 하는 것' 설명)** 로 역할 분담.
