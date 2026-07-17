@@ -47,3 +47,19 @@ const COMPASS_8 = ["북", "북동", "동", "남동", "남", "남서", "서", "�
 export function compass8(deg: number): string {
   return `${COMPASS_8[Math.round(deg / 45) % 8]}쪽`;
 }
+
+// 대한민국 경계 박스(여유 포함): 마라도(위33.06)~최북단, 백령도(경124.6)~독도(경131.87).
+const KOREA_BBOX = { minLat: 33.0, maxLat: 38.7, minLng: 124.5, maxLng: 132.0 };
+
+/**
+ * 좌표가 대한민국 범위인지. 두 API 모두 국내 전용(공공데이터 상가정보/국내 지도)이라,
+ * 범위 밖 좌표는 정상 사용자가 만들 수 없다 → 외부인이 범용 API로 전용하는 걸 막는 최소 방어선.
+ */
+export function isInKorea(lat: number, lng: number): boolean {
+  return (
+    lat >= KOREA_BBOX.minLat &&
+    lat <= KOREA_BBOX.maxLat &&
+    lng >= KOREA_BBOX.minLng &&
+    lng <= KOREA_BBOX.maxLng
+  );
+}

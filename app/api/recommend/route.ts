@@ -7,6 +7,7 @@ import { buildPool, pickThree, sample } from "@/lib/shuffle";
 import { filterByTags } from "@/lib/match";
 import { resolveMode } from "@/lib/modes";
 import { resolveBand } from "@/lib/walkBands";
+import { isInKorea } from "@/lib/distance";
 
 // Edge 런타임: V8 아이솔레이트라 콜드스타트 ~ms (fetch+순수로직뿐, Node 전용 API 미사용).
 export const runtime = "edge";
@@ -33,6 +34,14 @@ export async function POST(req: Request) {
   ) {
     return NextResponse.json(
       { error: "lat/lng/band가 유효하지 않습니다" },
+      { status: 400 },
+    );
+  }
+
+  // 국내 전용(공공데이터 상가정보) — 범위 밖 좌표는 조회해봐야 빈 결과라 키 쿼터만 태운다.
+  if (!isInKorea(lat, lng)) {
+    return NextResponse.json(
+      { error: "서비스 지역(대한민국) 밖입니다" },
       { status: 400 },
     );
   }
