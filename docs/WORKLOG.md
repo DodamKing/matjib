@@ -12,8 +12,9 @@
 - **소유확인 메타 2종**: `app/layout.tsx` metadata `verification`에 네이버(`other["naver-site-verification"]`)와
   **구글 서치콘솔**(`verification.google`) 추가 → `<meta name="naver-site-verification" ...>` / `<meta name="google-site-verification" ...>` 렌더.
   소유확인 통과 후에도 태그는 **유지**해야 함(지우면 해제됨).
-- **`app/robots.ts` 신규**: 전체 Allow, `/api/`·`/share/` Disallow(공유 URL은 개인 처방전 일회성 링크 — 색인 대상 아님,
-  OG 미리보기는 크롤 없이 동작), `Sitemap: {siteUrl}/sitemap.xml` 명시.
+- **`app/robots.ts` 신규**: 전체 Allow, **`/api/`만 Disallow**, `Sitemap: {siteUrl}/sitemap.xml` 명시.
+  - 처음엔 `/share/`도 Disallow 했다가 **되돌림** — 공유 페이지 색인 제외는 D17의 `noindex` 메타가 담당하는데,
+    Disallow가 크롤 자체를 막으면 크롤러가 그 noindex를 못 읽어 되레 URL만 검색결과에 남는다. (D17 보강 참조)
 - **`app/sitemap.ts` 신규**: 랜딩 `/` 한 건(결과 화면은 위치 기반 클라 상태라 URL 없음).
 - **`lib/site.ts` 신규**: `resolveSiteUrl()`/`siteUrl`을 layout에서 분리 — robots·sitemap·layout 3곳이 공유(중복 제거).
 

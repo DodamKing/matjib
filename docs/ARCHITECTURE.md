@@ -34,21 +34,29 @@
 > 키(SANGWON_API_KEY)는 이 API Route 서버에서만 사용 — 클라 번들 노출 금지 (D6).
 > 카드 UI는 상호·업종·도보·길찾기만 표시. (페르소나 카피는 D10에서 삭제)
 
-## 폴더 구조 (예정)
+## 폴더 구조
+
+> 파일별 책임·구현상태는 `STRUCTURE.md`(코드맵)가 상세. 여기는 뼈대만.
 
 ```
 /app
-  layout.tsx                # 루트 레이아웃 + 메타데이터(타이틀/설명)
+  layout.tsx                # 루트 레이아웃 + 메타데이터(타이틀/설명) + 네이버·구글 소유확인 메타
   page.tsx                  # 메인: 위치게이트 → 카드 3개
   icon.svg                  # 파비콘 (3카드 팬 마크)
   opengraph-image.tsx       # 공유 미리보기 이미지 (og:image, next/og로 생성)
+  robots.ts                 # robots.txt 생성 (사이트맵 위치 명시)
+  sitemap.ts                # sitemap.xml 생성 (랜딩 / 한 건)
+  /share/[rx]               # 공유 처방전 뷰 + 전용 OG 이미지 (D17)
   /api
     /recommend/route.ts     # 핵심 오케스트레이션 (4~8단계)
+    /staticmap/route.ts     # NCP Static Map 프록시 (키 서버전용, D11)
 /components
   LocationGate.tsx          # 위치 동의 UI
   Card.tsx                  # 식당 카드 1개
   CardDeck.tsx              # 카드 3개 + 셔플 버튼
   SituationInput.tsx        # 상황 태그 다중 선택 칩 UI (D5)
+  PlaceSheet.tsx            # 장소 상세 바텀시트 + 지도 미리보기·내비앱 선택 (D11)
+  MapModal.tsx              # 전체화면 인터랙티브 지도 (NAVER Dynamic Map, D12)
 /lib
   sangwon.ts                # 소상공인 API 클라이언트 (D2)
   kakao.ts                  # 카카오 로컬 보강 (D4, 선택적)
@@ -57,6 +65,13 @@
   match.ts                  # 태그 키워드 → 업종 필터링 (D5, LLM 미사용)
   distance.ts               # 도보분 ↔ 미터 변환, 거리 계산
   shuffle.ts                # 공정 셔플 + 풀 관리 (D3)
+  walkBands.ts              # 도보 밴드 5/10/15분 구간 정의 (D14)
+  navlinks.ts               # 내비앱 딥링크 빌더 (D11)
+  site.ts                   # 사이트 절대 URL 해석 (layout·robots·sitemap 공용)
+  shareLink.ts              # 처방전 3곳 ↔ URL 인코딩/디코딩 (D17)
+  ogFont.ts                 # OG 이미지용 한글 폰트 런타임 로드
+  useHistoryDismiss.ts      # 오버레이 뒤로가기 훅 (D16)
+  mock.ts                   # 강남역 목업 데이터(둘러보기 폴백)
 /types
   index.ts                  # Restaurant, RecommendRequest/Response 등
 ```
@@ -66,6 +81,9 @@
 ```
 SANGWON_API_KEY=        # 공공데이터포털 인증키
 KAKAO_REST_API_KEY=     # 카카오 로컬 (선택)
+SITE_URL=               # 커스텀 도메인 (선택). canonical·OG·robots·sitemap의 절대 URL 기준.
+                        #   미설정 시 VERCEL_PROJECT_PRODUCTION_URL(vercel.app) → localhost 폴백.
+                        #   ※ 배포 환경에 반드시 세팅 — 없으면 sitemap/robots가 vercel.app 도메인으로 나감.
 ```
 (Anthropic 키는 D5 개정으로 v1 스코프에서 제거 — 상황 매칭에 LLM을 쓰지 않음)
 `.env.example`에 키 이름만 두고 커밋. 값은 절대 커밋하지 않음.

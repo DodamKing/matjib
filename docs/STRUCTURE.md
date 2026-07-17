@@ -10,7 +10,7 @@
 | 경로 | 상태 | 책임 | 주요 export |
 |---|---|---|---|
 | `app/layout.tsx` | ✅ | 루트 레이아웃 + 메타데이터. `metadataBase`/canonical/OG/twitter(사이트 URL은 `lib/site.ts`) + 네이버·구글 사이트 소유확인 메타. 폰트/전역 스타일 | `default`, `metadata` |
-| `app/robots.ts` | ✅ | robots.txt 생성 — 전체 Allow, `/api/`·`/share/` 제외, 사이트맵 위치 명시 | `default` |
+| `app/robots.ts` | ✅ | robots.txt 생성 — 전체 Allow, `/api/`만 제외(`/share/`는 noindex가 담당 — D17 보강), 사이트맵 위치 명시 | `default` |
 | `app/sitemap.ts` | ✅ | sitemap.xml 생성 — 랜딩 `/` 한 건(결과는 URL 없는 클라 상태) | `default` |
 | `app/page.tsx` | ✅ | 메인. 큰 헤더 상단 → **카드덱+셔플+공유(화면 위, 한 뷰에)** → 조정(모드/도보/상황태그) 데크 아래로 (D20/B). 위치 전엔 헤더+게이트. `/api/recommend` fetch, `openPlace`→`PlaceSheet`(D11). 공유 복사 폴백(D20) | `default` |
 | `app/share/[rx]/page.tsx` | ✅ | 공유 처방전 뷰(서버) — URL의 3곳 재현(읽기전용)+길찾기+"나도 받기" CTA. OG 제목/설명에 상호명, `noindex` (D17) | `default`, `generateMetadata` |
