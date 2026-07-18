@@ -19,7 +19,7 @@
   }
   /* 공통 브랜드 마크 / 하단 */
   .brand{display:flex; align-items:center; gap:14px; font-weight:800; font-size:34px; letter-spacing:-.02em;}
-  .brand .dot{width:22px; height:22px; border-radius:50%; background:var(--orange);}
+  .brand .mark{width:46px; height:46px; flex-shrink:0;}
   .brand .sub{color:var(--muted); font-weight:600; font-size:26px; margin-left:2px;}
   .foot{position:absolute; left:88px; right:88px; bottom:76px; display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:30px; font-weight:700;}
   .foot .swipe{color:var(--orange); font-weight:800;}
@@ -73,11 +73,17 @@
 </style>
 </head>
 <body>
+<!-- 브랜드 마크: 앱 BrandMark(카드 3장 심볼)과 동일 자산. 문서에 한 번 정의 후 <use>로 참조 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="mark3" viewBox="0 0 32 32">
+  <rect x="7" y="11" width="10" height="14" rx="2.2" fill="#FDBA74" transform="rotate(-18 12 18)"/>
+  <rect x="15" y="11" width="10" height="14" rx="2.2" fill="#FB923C" transform="rotate(18 20 18)"/>
+  <rect x="11" y="9" width="10" height="14" rx="2.2" fill="#F97316"/>
+</symbol></svg>
 <div class="sheet">
 
   <!-- 1 · 커버/훅 -->
   <div class="slide" id="s1">
-    <div class="brand"><span class="dot"></span>matjib<span class="sub">낯선 동네 갈 데 정해주는 앱</span></div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳<span class="sub">낯선 동네 갈 데 정해주는 앱</span></div>
     <div class="body">
       <h1 class="h-xl">낯선 동네에서<br><span class="o">"뭐 먹지"</span><br>검색하다 지친 사람</h1>
       <p class="lead">여행 · 출장 · 이사 · 약속…<br>처음 온 동네에서 갈 데 못 정하는 나에게</p>
@@ -87,7 +93,7 @@
 
   <!-- 2 · 문제 공감 -->
   <div class="slide" id="s2">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div class="kicker">이런 적 있죠?</div>
       <h1 class="h-lg">지도앱 켜고<br>별점 20개 비교하다</h1>
@@ -103,7 +109,7 @@
 
   <!-- 3 · 리프레임(핵심) -->
   <div class="slide" id="s3">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div style="font-size:200px; color:var(--line); line-height:.6; font-weight:900;">&ldquo;</div>
       <h1 class="h-md muted">문제는 "맛집이 뭔지"가 아니라</h1>
@@ -115,7 +121,7 @@
 
   <!-- 4 · 해결(앱 실물 자리) -->
   <div class="slide" id="s4">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div class="kicker">해결은 5초</div>
       <h1 class="h-md">위치 동의 <span class="o">한 번</span> →<br>걸어서 5~15분 → <span class="o">딱 3곳</span></h1>
@@ -133,7 +139,7 @@
 
   <!-- 5 · 차별점(안 하는 것) -->
   <div class="slide" id="s5">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <h1 class="h-lg">이 앱이 <span class="o">안 하는</span><br>3가지</h1>
       <div class="nolist">
@@ -147,7 +153,7 @@
 
   <!-- 6 · 작동 방식 -->
   <div class="slide" id="s6">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div class="kicker">그럼 3곳은 어떻게 고름?</div>
       <h1 class="h-md">순위가 아니라,<br>이 세 가지로만.</h1>
@@ -165,12 +171,12 @@
 
   <!-- 7 · CTA -->
   <div class="slide" id="s7">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body cta-wrap">
       <div class="fingers">🚶📍</div>
       <h1 class="h-lg">다음에 낯선 동네<br>가면, <span class="o">켜봐.</span></h1>
       <p class="lead">위치 한 번이면 걸어갈 3곳 끝.<br>검색 안 함, 가입 안 함, 광고 없음.</p>
-      <div class="urlpill">matjib.dimad.kr</div>
+      <div class="urlpill">프로필 링크 → 딱세곳</div>
       <div class="save"><span>📌 저장해두기</span><span>💬 친구한테 보내기</span></div>
     </div>
     <div class="foot"><span>7 / 7</span><span></span></div>

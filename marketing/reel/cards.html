@@ -11,7 +11,7 @@
   .rslide{width:1080px; height:1920px; background:var(--amber); position:relative; overflow:hidden; color:var(--ink);
     display:flex; flex-direction:column; padding:130px 96px;}
   .brand{display:flex; align-items:center; gap:16px; font-weight:800; font-size:40px; letter-spacing:-.02em;}
-  .brand .dot{width:26px; height:26px; border-radius:50%; background:var(--orange);}
+  .brand .mark{width:52px; height:52px; flex-shrink:0;}
   .body{flex:1; display:flex; flex-direction:column; justify-content:center; gap:44px;}
   .kicker{color:var(--orange); font-weight:800; font-size:48px; letter-spacing:.01em;}
   h1{font-weight:800; letter-spacing:-.03em; line-height:1.14;}
@@ -26,11 +26,17 @@
 </style>
 </head>
 <body>
+<!-- 브랜드 마크: 앱 BrandMark(카드 3장 심볼)과 동일 자산. 문서에 한 번 정의 후 <use>로 참조 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="mark3" viewBox="0 0 32 32">
+  <rect x="7" y="11" width="10" height="14" rx="2.2" fill="#FDBA74" transform="rotate(-18 12 18)"/>
+  <rect x="15" y="11" width="10" height="14" rx="2.2" fill="#FB923C" transform="rotate(18 20 18)"/>
+  <rect x="11" y="9" width="10" height="14" rx="2.2" fill="#F97316"/>
+</symbol></svg>
 <div class="sheet">
 
   <!-- R1 여행 · HOOK -->
   <div class="rslide" id="r1h">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div class="kicker">여행 첫날, 숙소 앞</div>
       <h1 class="lg">여기 뭐가 맛집인지<br><span class="o">1도 모를 때</span></h1>
@@ -41,19 +47,19 @@
 
   <!-- R1 여행 · CTA -->
   <div class="rslide" id="r1c">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div class="fingers">🚶</div>
       <h1 class="lg">고민 끝.<br><span class="o">그냥 걸어감.</span></h1>
       <p class="lead">위치 한 번 → 걸어서 10분, 딱 3곳.<br>가입·광고 없음, 순위 안 매김.</p>
-      <div class="urlpill">matjib.dimad.kr</div>
+      <div class="urlpill">🔍 딱세곳 검색</div>
       <div class="save">📌 다음 여행 때 쓰게 저장</div>
     </div>
   </div>
 
   <!-- R2 이사 · HOOK -->
   <div class="rslide" id="r2h">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div class="kicker">이사 온 지 3개월째</div>
       <h1 class="lg">아직도 동네에<br><span class="o">갈 밥집이 없는 사람</span> 🙋</h1>
@@ -64,19 +70,19 @@
 
   <!-- R2 이사 · CTA -->
   <div class="rslide" id="r2c">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div class="fingers">🍚</div>
       <h1 class="md">리스트 100개 말고,<br><span class="o">딱 3곳.</span></h1>
       <p class="lead">매일 하나씩 셔플로 동네 뚫는 재미.<br>위치 한 번, 가입·광고 없음.</p>
-      <div class="urlpill">matjib.dimad.kr</div>
+      <div class="urlpill">🔍 딱세곳 검색</div>
       <div class="save">📌 우리 동네도 되나 저장</div>
     </div>
   </div>
 
   <!-- R3 약속 · HOOK -->
   <div class="rslide" id="r3h">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div class="kicker">약속 장소 30분 일찍 도착</div>
       <h1 class="lg">낯선 동네,<br><span class="o">이 시간에 뭐하지?</span></h1>
@@ -87,12 +93,12 @@
 
   <!-- R3 약속 · CTA -->
   <div class="rslide" id="r3c">
-    <div class="brand"><span class="dot"></span>matjib</div>
+    <div class="brand"><svg class="mark"><use href="#mark3"/></svg>딱세곳</div>
     <div class="body">
       <div class="fingers">☕</div>
       <h1 class="md">고민 0초,<br><span class="o">걸어서 5분 3곳.</span></h1>
       <p class="lead">약속 전엔 카페, 끝나면 술집 모드로 2차.<br>위치 한 번이면 앱이 정해줌.</p>
-      <div class="urlpill">matjib.dimad.kr</div>
+      <div class="urlpill">🔍 딱세곳 검색</div>
       <div class="save">📌 약속 잦으면 저장 필수</div>
     </div>
   </div>
